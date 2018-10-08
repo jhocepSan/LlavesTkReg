@@ -1,0 +1,7 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+<qresource prefix="/icons">
+    <file alias="exit.png">Imagenes/salir.png</file>
+    <file alias="clean.png">Imagenes/limpiar.png</file>
+</qresource>
+</RCC>

@@ -1,0 +1,11 @@
+QMainWindow#config{
+	background-color:#DCE4F9;
+}
+QTabWidget{
+	font-size: 20px;
+	font-family: verdana;
+}
+QTabWidget::pane{
+	background-color: #A9BCF5;
+	border-top: 2px solid #C2C7CB;
+}

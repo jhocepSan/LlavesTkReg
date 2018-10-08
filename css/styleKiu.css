@@ -1,0 +1,48 @@
+*{
+	font-family: sans-serif;
+}
+QGroupBox#busqueda{
+	background-color: #DBF6E7;
+	border: 1px solid #5E4EDC;
+	border-radius: 5px;
+	font-size: 20px;
+}
+QLabel{
+	color: #4B1508;
+	font-size: 18px;
+}
+QSpinBox{
+	font-size: 20px;
+}
+QLineEdit{
+	border: 1px solid #5E4EDC;
+	border-radius: 5px;
+	font-size: 20px;
+}
+QComboBox{
+	color: #4B1508;
+	font-size: 18px;
+}
+QTableWidget#tablaU{
+	alternate-background-color: #EAF8FA;
+	background-color: #E6F8FB;
+    gridline-color: #F2D3F8;
+    color: #3E4C4C;font-size: 18px;
+}
+QPushButton{
+	background-color:#7FBEF7;
+	color:#BB13DC;
+	border: 1px solid #5E4EDC;
+	border-radius: 5px;
+	font-size: 20px
+}
+QPushButton:hover{
+	background-color:#7FAEE7;
+}
+QCheckBox{
+	color: #4B1508;
+	font-size: 20px;
+}
+QCheckBox:hover{
+	background-color:#7FAEE7;
+}
