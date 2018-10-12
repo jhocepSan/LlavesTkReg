@@ -405,5 +405,5 @@ class crearLlavePdf():
 			self.pdf.cell(5,5,"16",1,1,'C')
 			self.pdf.text(10,155,unicode(dato[0]))
 			self.pdf.text(10,160,unicode(dato[1])+" "+unicode(dato[2]))
-	def salidaPDF(self,name):
-		self.pdf.output('C:/Registro/Documentos/%s.pdf'%(name),'F')
+	def salidaPDF(self,name,dire):
+		self.pdf.output('%s/Documentos/%s.pdf'%(dire,name),'F')

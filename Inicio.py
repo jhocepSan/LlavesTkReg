@@ -5,15 +5,15 @@ from PySide.QtCore import *
 import sys,os,Mensage,Registro
 
 class dialogo(QDialog):
-        def __init__(self):
+        def __init__(self,ruta):
                 super(dialogo,self).__init__()
-                self.msg=Mensage.Msg(self)
                 self.cerro=False
                 self.resize(350,170)
                 self.setWindowTitle("Nombre del EVENTO")
                 self.nombrel=QLabel("Nombre: ",self)
                 self.nombrela=QLabel("Eventos\nAnteriores:",self)
-                self.dir="c:/Registro"
+                self.dir=ruta
+                self.msg=Mensage.Msg(self,self.dir)
                 self.setWindowIcon(QIcon('%s/Imagenes/Logo.png'%self.dir))
                 self.nombre=QLineEdit(self)
                 self.nombre.editingFinished.connect(self.comprobar)
@@ -59,7 +59,7 @@ class dialogo(QDialog):
                         nombre=str(self.nombre.text())
                         if nombre!='':
                                 self.close()
-                                vent=Registro.ventanaR(nombre)
+                                vent=Registro.ventanaR(nombre,self.dir)
                                 vent.show()
                 elif tipo=='a':
                         sys.exit()
@@ -67,17 +67,20 @@ def main():
         app=QApplication(sys.argv)
         screen_resolution = app.desktop().screenGeometry()
         width, height = screen_resolution.width(), screen_resolution.height()
+        ruta="."
+        #ruta="C:/Registro"
         msgSaludo=QMessageBox()
+        with open('%s/css/styleDialog.css'%ruta) as f:
+                msgSaludo.setStyleSheet(f.read()) 
         msgSaludo.setIcon(QMessageBox.Information)
         msgSaludo.setWindowTitle("Bienvenido")
-        ruta="C:/Registro"
         msgSaludo.setWindowIcon(QIcon('%s/Imagenes/propiedad.png'%ruta))
         msgSaludo.setText("<h1>::::Programa Registro:::</h1>")
         msgSaludo.setInformativeText("<h2>Desarrollado en BOLIVIA</h2>\n<h2>Cel: 60790682 Bottan HSoft</h2>\n<h3>Desarrollador: Juan Jose Sanchez Ch.</h3>")
         msgSaludo.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
         inf=msgSaludo.exec_()
         if inf==QMessageBox.Ok:
-                evt=dialogo()
+                evt=dialogo(ruta)
                 evt.show()
                 sys.exit(app.exec_())
         elif inf==QMessageBox.Cancel:

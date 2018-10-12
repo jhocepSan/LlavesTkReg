@@ -6,11 +6,11 @@ from fpdf import FPDF
 
 class listaCategorias(object):
 	"""docstring for listaCategorias"""
-	def __init__(self,txt):
+	def __init__(self,txt,dire):
 		super (listaCategorias, self).__init__()
 		self.doc=FPDF('P','mm','A4')
 		self.doc.add_page()
-		self.dir="C:/Registro"
+		self.dir=dire
 		formato=open('%s/baseData/%s.txt'%(self.dir,str(txt)),'r')
 		self.estudiantes=sqlite3.connect('%s/baseData/listCombate.db'%self.dir)
 		self.formato=formato.read().split('\n')

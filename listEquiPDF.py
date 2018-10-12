@@ -59,8 +59,8 @@ class listEquiPdf(object):
 		self.pdf.cell(50,6,("Genero:  "+str(genero)),1,0,'L')
 		self.pdf.cell(150,6,"DESCALIFICADO POR NO TENER EQUIPO COMPLETO",1,0,'L')
 		self.pdf.ln(6)
-	def salidaPDF(self,nombre):
-		self.pdf.output('C:/Registro/Documentos/listaEquipos%s.pdf'%nombre,'F')
+	def salidaPDF(self,nombre,dire):
+		self.pdf.output('%s/Documentos/listaEquipos%s.pdf'%(dire,nombre),'F')
 		self.db.close()
 
 

@@ -352,6 +352,6 @@ class llaveTk5():
 			self.pdf.set_xy(50,93)
 			self.pdf.cell(5,5,"7",1,1,'C')
 			self.pdf.text(20,100,"BYE")
-	def salidaPDF(self,nombre):
-		self.pdf.output('C:/Registro/Documentos/llavestk5%s.pdf'%nombre,'F')
+	def salidaPDF(self,nombre,dire):
+		self.pdf.output('%s/Documentos/llavestk5%s.pdf'%(dire,nombre),'F')
 		self.db.close()

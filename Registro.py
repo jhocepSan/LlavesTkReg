@@ -10,15 +10,15 @@ import formas,listEstudent,Mensage,Configure
 #primera version de prueba funcional
 #colocar visualizacion de la configuracion del campeonato en pdf
 class ventanaR(QMainWindow):
-        def __init__(self,name=""):
+        def __init__(self,name="",dire=""):
                 super(ventanaR,self).__init__()
                 self.namE=name
-                self.dir='C:/Registro'
+                self.dir=dire
                 self.dirrFotoE=''
                 self.dirrForoC=''
                 self.yearActual=time.strftime("%Y")
                 self.setObjectName("ventanaR")  
-                self.msges=Mensage.Msg(self)
+                self.msges=Mensage.Msg(self,self.dir)
                 self.setWindowIcon(QIcon('%s/Imagenes/Logo.png'%self.dir))
                 self.datosC=sqlite3.connect('%s/baseData/config.db'%self.dir)
                 with open('%s/css/stylesReg.css'%self.dir) as f:
@@ -36,7 +36,7 @@ class ventanaR(QMainWindow):
                 self.botones()
                 self.posicion()
                 self.createMenu()
-                self.genForm=formas.forma()
+                self.genForm=formas.forma(self.dir)
                 namer='%s/baseData/estudiantes.db'%self.dir
                 if path.exists(namer):
                         self.listaGeneral=sqlite3.connect(namer)
@@ -852,7 +852,7 @@ class ventanaR(QMainWindow):
                 cur.close()
                 self.datos.commit()
         def generar(self):
-                self.genLl=genLlave.generaLlave()
+                self.genLl=genLlave.generaLlave(self.dir)
                 evento=self.tipoPart.currentText()
                 QApplication.setOverrideCursor(Qt.WaitCursor)
                 try:
@@ -879,10 +879,10 @@ class ventanaR(QMainWindow):
                                 llavetk=listEquiPDF.listEquiPdf(self.name)
                                 llavetk.enlistarEquipo("HombreRompimiento","EquiposHombre","Hombre")
                                 llavetk.enlistarEquipo("MujerRompimiento","EquiposMujer","Mujer")
-                                llavetk.salidaPDF(self.namE)
+                                llavetk.salidaPDF(self.namE,self.dir)
                                 llaveTk=llavesTK5.llaveTk5(self.name)
                                 llaveTk.generarTk()
-                                llaveTk.salidaPDF(self.namE)
+                                llaveTk.salidaPDF(self.namE,self.dir)
                                 self.msges.mensageBueno("<h1>Generado de listas TK5 </h1>")
                 except Exception as e:
                         raise e

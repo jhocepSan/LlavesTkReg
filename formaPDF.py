@@ -44,5 +44,5 @@ class listaFormas(object):
 		self.doc.cell(30,8,data[7],1,0,'C')
 		self.doc.cell(25,8,data[8],1,0,'C')
 		self.doc.ln(8)
-	def salidaPDF(self,nombre):
-		self.doc.output('C:/Registro/Documentos/formas%s.pdf'%str(nombre),'F')
+	def salidaPDF(self,nombre,dire):
+		self.doc.output('%s/Documentos/formas%s.pdf'%(dire,str(nombre)),'F')

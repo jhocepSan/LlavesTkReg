@@ -3,8 +3,8 @@ from PySide.QtCore import *
 import sqlite3,os,formaPDF
 
 class forma(object):
-	def __init__(self):
-		self.dirr="C:/Registro"
+	def __init__(self,dire=""):
+		self.dirr=dire
 		self.dir='%s/baseData/listForm.db'%self.dirr
 		if os.path.exists(self.dir):
 			os.remove(self.dir)
@@ -75,7 +75,7 @@ class forma(object):
 						pdf.lista(inf)
 		cur.close()
 		cur2.close()	
-		pdf.salidaPDF(nombre)				
+		pdf.salidaPDF(nombre,self.dirr)				
 	def crearTabla(self):
 		cur=self.db.cursor()
 		cur.execute('CREATE TABLE IF NOT EXISTS Formas(Nombre TEXT,Genero TEXT,Categoria TEXT,EdadIni INT,EdadFin INT,Grado TEXT,Forma TEXT)')

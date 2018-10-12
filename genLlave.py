@@ -3,8 +3,8 @@
 import sqlite3,llaver,snpelea,categorition
 
 class generaLlave():
-	def __init__(self):
-		self.dir="C:/Registro"
+	def __init__(self,dire=""):
+		self.dir=dire
 		self.db=sqlite3.connect('%s/baseData/listCombate.db'%self.dir)
 		self.formato=open('%s/baseData/formato.txt'%self.dir,'w')
 		self.formato.close()
@@ -13,7 +13,7 @@ class generaLlave():
 		self.formatoll=open('%s/baseData/llaves.txt'%self.dir,'w')
 		self.formatoll.close()
 		self.documentaPDF=llaver.crearLlavePdf()
-		self.cnpeleas=snpelea.sinpeleaPDF()
+		self.cnpeleas=snpelea.sinpeleaPDF(self.dir)
 	def categorizar(self,cat,gen,lista,nombre,txt):
 		self.formato=open('%s/baseData/%s.txt'%(self.dir,str(txt)),'a')
 		self.formatoll=open('%s/baseData/llaves.txt'%self.dir,'a')
@@ -71,7 +71,7 @@ class generaLlave():
 		self.formato=open('%s/baseData/%s.txt'%(self.dir,name),'w')
 		self.formato.close()	
 	def generaPdf(self,name,txt):
-		dato=categorition.listaCategorias(txt)
+		dato=categorition.listaCategorias(txt,self.dir)
 		dato.salidaPDF(name)
 	def generarLlaves(self,name,titulo):
 		self.formatoll=open('%s/baseData/llaves.txt'%self.dir,'r')
@@ -99,7 +99,7 @@ class generaLlave():
 			elif caso>=17 and caso<=32:
 				pass
 		cur.close()
-		self.documentaPDF.salidaPDF(name)
+		self.documentaPDF.salidaPDF(name,self.dir)
 		self.cnpeleas.salidaPDF(name)
 	def salirDb(self):
 		self.db.close()
