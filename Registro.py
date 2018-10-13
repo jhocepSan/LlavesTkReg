@@ -23,11 +23,11 @@ class ventanaR(QMainWindow):
                 with open('%s/css/stylesReg.css'%self.dir) as f:
                         self.setStyleSheet(f.read())
                 self.setWindowTitle("Registro de participantes")
-                self.resize(700,700)
+                self.resize(1100,700)
                 self.setMinimumHeight(700)
-                self.setMinimumWidth(700)
+                self.setMinimumWidth(1100)
                 self.setMaximumHeight(700)
-                self.setMaximumWidth(700)
+                self.setMaximumWidth(1100)
                 self.statusBar().showMessage("Mucho Gusto")
                 self.statusBar().setObjectName("infB")
                 self.textos()
@@ -184,6 +184,7 @@ class ventanaR(QMainWindow):
                 self.doc.setGeometry(220,50,190,20)
                 self.yearl.setGeometry(420,30,140,40)
                 self.year.setGeometry(570,30,80,40)
+                self.tabla.setGeometry(680,30,400,630)
                 self.nombr.setGeometry(20,80,110,40)
                 self.nombres.setGeometry(140,80,140,40)
                 self.apllds.setGeometry(300,80,110,40)
@@ -258,6 +259,16 @@ class ventanaR(QMainWindow):
                 self.foto.setIconSize(QSize(60,60))
                 self.foto.setObjectName("redondo")
                 self.foto.setStatusTip("Sacar Foto con la Computadora")
+                self.tabla=QTableWidget(self)
+                self.tabla.setRowCount(100)
+                self.tabla.setColumnCount(3)
+                self.tabla.setHorizontalHeaderLabels(['Id',"Nombre","Apellido"])
+                self.tabla.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
+                self.tabla.cellClicked.connect(self.accionTabla)
+        def accionTabla(self):
+                iden=self.tabla.item(self.tabla.currentRow(),0).text()
+                self.carnetId.setText(str(iden))
+                self.changeEstu()
         def completarYear(self):
                 self.peso.clear()
                 self.edad.setValue(int(int(self.yearActual)-int(self.year.value())))
@@ -279,25 +290,45 @@ class ventanaR(QMainWindow):
                 img=QPixmap.fromImage(QImage('%s/Imagenes/clb.png'%self.dir)).scaled(180,180,Qt.KeepAspectRatio)
                 self.imgClb.setPixmap(img)
                 self.imgClb.setAlignment(Qt.AlignCenter)
+                self.tabla.clear()
+                self.tabla.setHorizontalHeaderLabels(['Id',"Nombre","Apellido"])
                 self.dirrForoC=''
                 self.dirrFotoE=''
         def buscarNombre(self):
                 cur=self.listaGeneral.cursor()
+                rown=0
                 gen=["Hombre","Mujer"]
                 for j in range(2):
-                        cur.execute("SELECT * FROM %s WHERE Nombre=:nom AND Apellido=:apll"%str(gen[j]),
-                                {"nom":str(self.nombres.text()),"apll":str(self.apellidos.text())})
-                        for i in cur:
-                                self.carnetId.setText(str(i[0]))
-                                self.genero.setCurrentIndex(j)
-                                self.edad.setValue(int(i[3]))
-                                self.cinturon.setText(i[5])
-                                self.peso.setValue(float(i[4]))
-                                self.clubs.setText(i[6])
-                                self.dirrFotoE=str(i[7])
-                                self.dirrForoC=str(i[8])
-                                self.loaderImg(self.imgPar,str(i[7]))
-                                self.loaderImg(self.imgClb,str(i[8]))
+                        if self.nombres.text()!='' and self.apellidos.text()!='':
+                                cur.execute("SELECT * FROM %s WHERE Nombre=:nom AND Apellido=:apll"%str(gen[j]),
+                                        {"nom":str(self.nombres.text()),"apll":str(self.apellidos.text())})
+                                for i in cur:
+                                        self.carnetId.setText(str(i[0]))
+                                        self.genero.setCurrentIndex(j)
+                                        self.edad.setValue(int(i[3]))
+                                        self.cinturon.setText(i[5])
+                                        self.peso.setValue(float(i[4]))
+                                        self.clubs.setText(i[6])
+                                        self.dirrFotoE=str(i[7])
+                                        self.dirrForoC=str(i[8])
+                                        self.loaderImg(self.imgPar,str(i[7]))
+                                        self.loaderImg(self.imgClb,str(i[8]))
+                        elif self.nombres.text()!='' and self.apellidos.text()=='':
+                                cur.execute("SELECT * FROM %s WHERE Nombre=:nom"%str(gen[j]),
+                                        {"nom":str(self.nombres.text())})
+                                for i in cur:
+                                        self.tabla.setItem(rown,0,QTableWidgetItem(str(i[0])))
+                                        self.tabla.setItem(rown,1,QTableWidgetItem(str(i[1])))
+                                        self.tabla.setItem(rown,2,QTableWidgetItem(str(i[2])))
+                                        rown+=1
+                        elif self.nombres.text()=='' and self.apellidos.text()!='':
+                                cur.execute("SELECT * FROM %s WHERE Apellido=:apll"%str(gen[j]),
+                                        {"apll":str(self.apellidos.text())})
+                                for i in cur:
+                                        self.tabla.setItem(rown,0,QTableWidgetItem(str(i[0])))
+                                        self.tabla.setItem(rown,1,QTableWidgetItem(str(i[1])))
+                                        self.tabla.setItem(rown,2,QTableWidgetItem(str(i[2])))
+                                        rown+=1
                 cur.close()
                 self.listaGeneral.commit()
         def changeEstu(self):
