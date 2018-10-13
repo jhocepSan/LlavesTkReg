@@ -5,9 +5,8 @@ from PySide.QtCore import *
 import sqlite3,sys,os,shutil
 import os.path as path
 from fpdf import FPDF
-import time,genLlave,listEquiPDF,llavesTK5
+import time,genLlave,listEquiPDF,llavesTK5,genLista
 import formas,listEstudent,Mensage,Configure
-#primera version de prueba funcional
 #colocar visualizacion de la configuracion del campeonato en pdf
 class ventanaR(QMainWindow):
         def __init__(self,name="",dire=""):
@@ -468,12 +467,12 @@ class ventanaR(QMainWindow):
                 menuDat.addAction(loadFot)
                 menuDat.addAction(loadFotC)
                 menuLista=self.menuBar().addMenu(str("&Listas"))
-                listEe=QAction("Evento",self,shortcut="Ctrl+J",
-                        statusTip="Abrir la lista de los estudiantes del Evento Actual",
-                        triggered=lambda:self.mostrarLista('%s'%self.namE))
+                listEe=QAction("Configuraciones",self,shortcut="Ctrl+J",
+                        statusTip="Abrir la Configuracion del Programa",
+                        triggered=lambda:self.mostrarConf())
                 listEr=QAction("General",self,shortcut="Ctrl+Y",
                         statusTip="Abrir lista de Estudiantes Registrados",
-                        triggered=lambda:self.mostrarLista("Estudiantes"))
+                        triggered=lambda:self.mostrarLista("estudiantes"))
                 menuLista.addAction(openLsd)
                 menuLista.addAction(listEr)
                 menuLista.addAction(listEe)
@@ -510,6 +509,14 @@ class ventanaR(QMainWindow):
         def mostrar(self,name):
                 os.system('%s/Documentos/%s.pdf &'%(str(self.dir),str(name)))
         def mostrarLista(self,nombre):
+                name="%s/baseData/%s.db"%(self.dir,nombre)
+                lista=genLista.listaPDF(name)
+                lista.listaEstudiante("Hombre",nombre)
+                lista.listaEstudiante("Mujer",nombre)
+                lista.salidaPDF(self.dir,nombre)
+                lista.cerrarDB()
+                self.mostrar(self,"listaGeneral%s"%nombre)
+        def mostrarConf(self):
                 pass
         def mostrarSD(self,name):
                 listaESD=listEstudent.listaPartPDF()
