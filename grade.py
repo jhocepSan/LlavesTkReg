@@ -3,14 +3,14 @@ from PySide.QtCore import *
 import sqlite3,os,Mensage
 
 class grades(QWidget):
-	def __init__(self):
+	def __init__(self,dire):
 		super(grades,self).__init__()
-		self.dir='C:/Registro'
+		self.dir=dire
 		self.datos=sqlite3.connect('%s/baseData/config.db'%self.dir)
 		self.createTabla()
 		with open('%s/css/styleGrad.css'%self.dir) as f:
 			self.setStyleSheet(f.read())
-		self.msgAl=Mensage.Msg(self)
+		self.msgAl=Mensage.Msg(self,self.dir)
 		self.contenedor=QGridLayout()
 		self.labe=["Principiantes","Novatos","Avanzados","Poom","Dan"]
 		self.texts=[]

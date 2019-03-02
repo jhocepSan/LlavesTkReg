@@ -3,10 +3,10 @@ from PySide.QtCore import *
 import sqlite3,Mensage
 
 class tk(QWidget):
-	def __init__(self):
+	def __init__(self,dire):
 		super(tk,self).__init__()
-		self.msgAl=Mensage.Msg(self)
-		self.dir="C:/Registro"
+		self.dir=dire
+		self.msgAl=Mensage.Msg(self,self.dir)
 		with open('%s/css/styleTk5.css'%self.dir) as f:
 			self.setStyleSheet(f.read())
 		self.conte=QGridLayout()

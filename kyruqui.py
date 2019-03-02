@@ -3,9 +3,9 @@ from PySide.QtCore import *
 import sqlite3,os,Mensage
 
 class kyruguis(QWidget):
-	def __init__(self):
+	def __init__(self,ruta):
 		super(kyruguis,self).__init__()
-		self.dir="C:/Registro"
+		self.dir=ruta
 		with open('%s/css/styleKiu.css'%self.dir) as f:
 			self.setStyleSheet(f.read())
 		self.datos=sqlite3.connect("%s/baseData/config.db"%self.dir)
@@ -13,7 +13,7 @@ class kyruguis(QWidget):
 		self.contenedor=QHBoxLayout()
 		self.conteText=QGridLayout()
 		self.conteBuscar=QVBoxLayout()
-		self.msg=Mensage.Msg(self)
+		self.msg=Mensage.Msg(self,self.dir)
 		self.vistMenu()
 		self.cargarText()
 		self.cargarEdit()

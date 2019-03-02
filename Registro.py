@@ -819,7 +819,7 @@ class ventanaR(QMainWindow):
                 self.close()
                 self.genForm.cerrarDB()
         def newConf(self):
-                self.config=Configure.ventanaConfi()
+                self.config=Configure.ventanaConfi(self.dir)
                 self.config.show()
         def loadClub(self):
                 self.loadClb=cargarClub()               

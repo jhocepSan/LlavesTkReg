@@ -5,10 +5,10 @@ from PySide.QtCore import *
 import pumse,grade,kyruqui,tk5
 
 class ventanaConfi(QMainWindow):
-        def __init__(self):
+        def __init__(self,ruta=""):
                 super(ventanaConfi,self).__init__()
                 self.setObjectName("config")
-                self.dir="C:/Registro"
+                self.dir=ruta
                 self.setGeometry(100,100,775,460)
                 with open('%s/css/styleConf.css'%self.dir) as f:
                         self.setStyleSheet(f.read())
@@ -31,7 +31,7 @@ class ventanaConfi(QMainWindow):
                 self.menuCat=QTabWidget(self)
                 self.menuCat.setObjectName("tabs")
                 self.menuCat.setGeometry(5,30,765,420)
-                self.menuCat.addTab(kyruqui.kyruguis(),"&Combates")
-                self.menuCat.addTab(pumse.pumses(),"&Formas")
-                self.menuCat.addTab(grade.grades(),"&Grados")
-                self.menuCat.addTab(tk5.tk(),"&Tk5")
+                self.menuCat.addTab(kyruqui.kyruguis(self.dir),"&Combates")
+                self.menuCat.addTab(pumse.pumses(self.dir),"&Formas")
+                self.menuCat.addTab(grade.grades(self.dir),"&Grados")
+                self.menuCat.addTab(tk5.tk(self.dir),"&Tk5")
