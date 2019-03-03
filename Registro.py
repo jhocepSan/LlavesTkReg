@@ -816,8 +816,8 @@ class ventanaR(QMainWindow):
                 self.listaGeneral.close()
                 self.datos.close()
                 self.datosC.close()
-                self.close()
                 self.genForm.cerrarDB()
+                self.close()
         def newConf(self):
                 self.config=Configure.ventanaConfi(self.dir)
                 self.config.show()
@@ -857,17 +857,22 @@ class ventanaR(QMainWindow):
                 if self.tipoPart.currentText()=='Forma':
                         formas=self.subCategoria.text()
                         num=formas[len(formas)-1:]
-                        if num.isdigit():
+                        if not num.isdigit():
                                 gra=self.cinturon.text().replace(' ','')
                                 cur=self.datosC.cursor()
                                 cur.execute("SELECT * FROM Pumse WHERE Grado=:gr",{"gr":gra})
                                 self.datosC.commit()
                                 row=cur.fetchone()
+                                nn=formas.split(num)
+                                nnn=nn[len(nn)-2]
                                 try:
                                         if len(row) is not None:
                                                 cur.execute("SELECT * FROM Pumse WHERE Grado=:gr",{"gr":gra})
-                                                for i in cur:
-                                                        if i[1].find(num)<0:
+                                                nf=cur.fetchone()[1].split(',')
+                                                for i in range(len(nf)):
+                                                        if nf[i]==nnn:
+                                                                break
+                                                        elif i==len(nf)-1:
                                                                 self.msges.mensageMalo("<h2>La FORMA Ingresada\nNo es permitido</h2>")
                                 except TypeError:
                                         self.cinturon.clear()
@@ -939,11 +944,12 @@ class ventanaR(QMainWindow):
                         elemento.setAlignment(Qt.AlignCenter)
                         extencion=fileName[fileName.find('.'):]
                         if tipo=='C':
-                                direccion="%s/imgEstudiante/%s"%(str(os.getcwd()),str(self.carnetId.text()+extencion))
+                                direccion="%s/Imagenes/imgEstudiante/%s"%(str(os.getcwd()),str(self.carnetId.text()+extencion))
+                                print direccion
                                 shutil.copyfile(fileName,direccion)
                                 self.dirrForoC=str(direccion)
                         else:
-                                direccion="%s/imgClub/%s"%(str(os.getcwd()),str(self.clubs.text().upper()+extencion))
+                                direccion="%s/Imagenes/imgClub/%s"%(str(os.getcwd()),str(self.clubs.text().upper()+extencion))
                                 shutil.copyfile(fileName,direccion)
                                 self.dirrFotoE=str(direccion)
         def loaderImg(self,ms,dirr):
@@ -955,22 +961,22 @@ class ventanaR(QMainWindow):
                 if fileName:
                         for i in range(len(fileName)):
                                 try:
-                                        shutil.move(str(fileName[i]),'%s/imgEstudiante/'%str(os.getcwd()))
+                                        shutil.move(str(fileName[i]),'%s/Imagenes/imgEstudiante/'%str(os.getcwd()))
                                 except shutil.Error as e:
                                         cadena=str(e)[str(e).find('\'')+1:]
                                         os.remove(str(cadena[:cadena.find('\'')]))
-                                        shutil.move(str(fileName[i]),'%s/imgEstudiante/'%str(os.getcwd()))
+                                        shutil.move(str(fileName[i]),'%s/Imagenes/imgEstudiante/'%str(os.getcwd()))
                         self.msges.mensageBueno('<h1>Imagenes de los Estudiantes Cargado</h1>')
         def loadImgClb(self):
                 fileName,_=QFileDialog.getOpenFileNames(self,u"Imagen del club",QDir.currentPath())
                 if fileName:
                         for i in range(len(fileName)):
                                 try:
-                                        shutil.move(str(fileName[i]),"%s/imgClub/"%str(os.getcwd()))
+                                        shutil.move(str(fileName[i]),"%s/Imagenes/imgClub/"%str(os.getcwd()))
                                 except shutil.Error as e:
                                         cadena=str(e)[str(e).find('\'')+1:]
                                         os.remove(str(cadena[:cadena.find('\'')]))
-                                        shutil.move(str(fileName[i]),"%s/imgClub/"%str(os.getcwd()))
+                                        shutil.move(str(fileName[i]),"%s/Imagenes/imgClub/"%str(os.getcwd()))
                         self.msges.mensageBueno('<h1>Imagen del Club Cargado</h1>')
         def introducirLista(self):
                 tablas=["HombreCombate","MujerCombate","HombreForma","MujerForma",
@@ -1093,6 +1099,6 @@ class ventanaR(QMainWindow):
         def copyConf(self):
                 fileName,_=QFileDialog.getSaveFileName(self,u"Guardar la Configuración",QDir.currentPath())
                 if fileName:
-                        direccion="c:/Registro/baseData/config.db"
+                        direccion="%s/baseData/config.db"%self.dir
                         shutil.copyfile(direccion,str(fileName+'.db'))
                 self.msges.mensageBueno("<h1>La Configuración fue Guardado..!!</h1>")

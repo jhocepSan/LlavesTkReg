@@ -67,8 +67,7 @@ def main():
         app=QApplication(sys.argv)
         screen_resolution = app.desktop().screenGeometry()
         width, height = screen_resolution.width(), screen_resolution.height()
-        ruta="."
-        #ruta="C:/Registro"
+        ruta="D:/LlavesTkReg"
         msgSaludo=QMessageBox()
         with open('%s/css/styleDialog.css'%ruta) as f:
                 msgSaludo.setStyleSheet(f.read()) 
