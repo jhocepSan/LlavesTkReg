@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 from fpdf import FPDF
 
-class listaFormas(object):
+class listaFormas():
 	def __init__(self):
-		super (listaFormas, self).__init__()
+		#super (listaFormas, self).__init__()
 		self.doc=FPDF('L','mm','A4')
 		self.doc.add_page()
 		self.doc.set_font('Arial','BI',16)

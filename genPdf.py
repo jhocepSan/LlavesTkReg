@@ -3,11 +3,11 @@ import sqlite3
 import os.path as path
 
 class genPDF(object):
-    def __init__(self):
+    def __init__(self,dire):
         self.snp=FPDF(orientation = 'P', unit = 'mm', format='A4')
         self.snp.set_line_width(0.3)
         self.header()
-        self.dir="C:/Registro"
+        self.dir=dire
     def header(self,titulo):
         self.snp.set_font('arial','',7)
         self.snp.add_page()

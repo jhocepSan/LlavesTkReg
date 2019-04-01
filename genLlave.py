@@ -3,7 +3,7 @@
 import sqlite3,llaver,snpelea,categorition
 
 class generaLlave():
-	def __init__(self,dire=""):
+	def __init__(self,dire):
 		self.dir=dire
 		self.db=sqlite3.connect('%s/baseData/listCombate.db'%self.dir)
 		self.formato=open('%s/baseData/formato.txt'%self.dir,'w')

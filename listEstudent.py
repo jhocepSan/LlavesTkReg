@@ -5,9 +5,10 @@ import os.path as path
 	clase para generar pdf de estudiantes sin documento
 '''
 class listaPartPDF(object):
-	def __init__(self):
+	def __init__(self,dire):
 		self.doc=FPDF(orientation = 'L', unit = 'mm', format='A4')
-		name='c:/Registro/baseData/sinDoc.db'
+		self.dir=dire
+		name='%s/baseData/sinDoc.db'%self.dir
 		self.db=sqlite3.connect(name)
 		self.doc.set_font('arial','',19.0)
 		self.doc.set_line_width(0.5)
@@ -56,6 +57,6 @@ class listaPartPDF(object):
 				self.doc.ln(5)
 		cur.close()
 		self.db.commit()
-	def salidaPDF(self):
-		self.doc.output('C:/Registro/Documentos/sinDocument.pdf','F')
+	def salidaPDF(self,name):
+		self.doc.output('%s/Documentos/sinDocument%s.pdf'%(self.dir,name),'F')
 		self.db.close()

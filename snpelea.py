@@ -2,7 +2,7 @@ from fpdf import FPDF
 import sqlite3
 import os.path as path
 
-class sinpeleaPDF(object):
+class sinpeleaPDF():
     def __init__(self,dire):
         self.snp=FPDF(orientation = 'P', unit = 'mm', format='A4')
         self.snp.set_line_width(0.3)

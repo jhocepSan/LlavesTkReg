@@ -6,7 +6,7 @@ class tk(QWidget):
 	def __init__(self,dire):
 		super(tk,self).__init__()
 		self.dir=dire
-		self.msgAl=Mensage.Msg(self,self.dir)
+		self.msgAl=Mensage.Msg(self.dir)
 		with open('%s/css/styleTk5.css'%self.dir) as f:
 			self.setStyleSheet(f.read())
 		self.conte=QGridLayout()

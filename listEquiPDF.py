@@ -4,9 +4,9 @@ import os.path as path
 from fpdf import FPDF
 import sqlite3
 
-class listEquiPdf(object):
+class listEquiPdf():
 	def __init__(self,db):
-		super(listEquiPdf,self).__init__()
+		#super(listEquiPdf,self).__init__()
 		self.pdf=FPDF('L','mm','A4')
 		self.pdf.add_page()
 		self.pdf.set_font('Arial','B',16)

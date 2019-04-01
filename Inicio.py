@@ -13,7 +13,7 @@ class dialogo(QDialog):
                 self.nombrel=QLabel("Nombre: ",self)
                 self.nombrela=QLabel("Eventos\nAnteriores:",self)
                 self.dir=ruta
-                self.msg=Mensage.Msg(self,self.dir)
+                self.msg=Mensage.Msg(self.dir)
                 self.setWindowIcon(QIcon('%s/Imagenes/Logo.png'%self.dir))
                 self.nombre=QLineEdit(self)
                 self.nombre.editingFinished.connect(self.comprobar)

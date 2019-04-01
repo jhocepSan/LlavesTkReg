@@ -6,7 +6,7 @@ import sqlite3,sys,os,shutil
 import os.path as path
 from fpdf import FPDF
 import time,genLlave,listEquiPDF,llavesTK5,genLista
-import formas,listEstudent,Mensage,Configure
+import formas,listEstudent,Mensage,Configure,cameraP
 #colocar visualizacion de la configuracion del campeonato en pdf
 class ventanaR(QMainWindow):
         def __init__(self,name="",dire=""):
@@ -17,7 +17,7 @@ class ventanaR(QMainWindow):
                 self.dirrForoC=''
                 self.yearActual=time.strftime("%Y")
                 self.setObjectName("ventanaR")  
-                self.msges=Mensage.Msg(self,self.dir)
+                self.msges=Mensage.Msg(self.dir)
                 self.setWindowIcon(QIcon('%s/Imagenes/Logo.png'%self.dir))
                 self.datosC=sqlite3.connect('%s/baseData/config.db'%self.dir)
                 with open('%s/css/stylesReg.css'%self.dir) as f:
@@ -79,6 +79,7 @@ class ventanaR(QMainWindow):
                 self.bunder=QLabel("<h1>Peso</h1>",self)
                 self.subCategory=QLabel("<h1>SubCategoria</h1>",self)
                 self.tipoPartL=QLabel("<h1>Participa</h1>",self)
+                self.alturaL=QLabel("<h1>Altura</h1>",self)
                 self.ci=QCheckBox("Carnet Identidad",self)
                 self.doc=QCheckBox("Documento Grado",self)
                 self.cintaN=QCheckBox("Activar CintaNegra",self)
@@ -174,7 +175,12 @@ class ventanaR(QMainWindow):
                 self.categoria.setStatusTip("Categoria del Participante") 
                 self.subCategoria=QLineEdit(self)
                 self.subCategoria.textChanged.connect(self.autoForma)
-                self.subCategoria.setStatusTip("Sub-Categoria del Participante") 
+                self.subCategoria.setStatusTip("Sub-Categoria del Participante")
+                self.altura=QDoubleSpinBox(self)
+                self.altura.setMinimum(0)
+                self.altura.setMaximum(2)
+                self.altura.setSingleStep(0.01)
+                self.altura.setStatusTip("Ingresar la altura del Participante") 
         def formalClub(self):
                 self.clubs.setText(str(self.clubs.text()).upper())
         def posicion(self):
@@ -206,9 +212,11 @@ class ventanaR(QMainWindow):
                 self.subCategoria.setGeometry(510,240,90,40)
                 self.tipoPartL.setGeometry(20,290,140,40)
                 self.tipoPart.setGeometry(170,290,150,40)
-                self.cintaN.setGeometry(340,290,200,40)
-                self.tkTipo.setGeometry(550,290,110,40)
+                self.alturaL.setGeometry(340,290,80,40)
+                self.altura.setGeometry(430,290,100,40)
                 self.dataCm.setGeometry(230,360,210,30)
+                self.cintaN.setGeometry(230,400,200,40)
+                self.tkTipo.setGeometry(230,440,110,40)
                 self.imgPar.setGeometry(20,350,200,200)
                 self.fotoP.setGeometry(80,560,80,30)
                 self.imgClb.setGeometry(450,350,200,200)
@@ -259,12 +267,16 @@ class ventanaR(QMainWindow):
                 self.foto.setIconSize(QSize(60,60))
                 self.foto.setObjectName("redondo")
                 self.foto.setStatusTip("Sacar Foto con la Computadora")
+                self.foto.clicked.connect(self.capturaCamara)
                 self.tabla=QTableWidget(self)
                 self.tabla.setRowCount(100)
                 self.tabla.setColumnCount(3)
                 self.tabla.setHorizontalHeaderLabels(['Id',"Nombre","Apellido"])
                 self.tabla.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
                 self.tabla.cellClicked.connect(self.accionTabla)
+        def capturaCamara(self):
+                self.camr=cameraP.camaraCap(self.dir)
+                self.camr.show()
         def accionTabla(self):
                 iden=self.tabla.item(self.tabla.currentRow(),0).text()
                 self.carnetId.setText(str(iden))
@@ -442,7 +454,7 @@ class ventanaR(QMainWindow):
                 menuPdf.addAction(self.openLl)
                 self.openLsp=QAction("&Sin Pelea",self,shortcut="Ctrl+S",
                         statusTip="Participantes sin Pelea",
-                        triggered=lambda:self.mostrar("listaSinPeleallaves%s"%self.namE))
+                        triggered=lambda:self.mostrar("listaSinPeleallavesCombate%s"%self.namE))
                 menuPdf.addAction(self.openLsp)         
                 menuPdfF=self.menuBar().addMenu(str('&Formas'))
                 openListF=QAction("&Lista &Formas",self,shortcut="Ctrl+F",
@@ -550,9 +562,9 @@ class ventanaR(QMainWindow):
         def mostrarConf(self):
                 pass
         def mostrarSD(self,name):
-                listaESD=listEstudent.listaPartPDF()
+                listaESD=listEstudent.listaPartPDF(self.dir)
                 listaESD.generaPDF()
-                listaESD.salidaPDF()
+                listaESD.salidaPDF(str(name))
                 os.system('%s/Documentos/%s.pdf'%(self.dir,str(name)))
         def guardar(self):
                 tipo=self.tipoPart.currentText()
@@ -898,40 +910,39 @@ class ventanaR(QMainWindow):
                 self.genLl=genLlave.generaLlave(self.dir)
                 evento=self.tipoPart.currentText()
                 QApplication.setOverrideCursor(Qt.WaitCursor)
-                try:
-                        if evento=='Combate':
-                                self.genLl.limpiar("formato")
-                                self.genLl.categorizar("CategoriaH","Hombre","HombreCombate",str(self.name),"formato")
-                                self.genLl.categorizar("CategoriaM","Mujer","MujerCombate",str(self.name),"formato")
-                                self.genLl.generaPdf("participantes%s"%self.namE,"formato")
-                                self.genLl.generarLlaves("llavesCombate%s"%self.namE,"Combates")
-                                self.msges.mensageBueno("<h1>Generado las llaves</h1>")
-                        elif evento=='Forma':
-                                self.genForm.clasificarForma("CategoriaH","Hombre","HombreForma",str(self.name))
-                                self.genForm.clasificarForma("CategoriaM","Mujer","MujerForma",str(self.name))
-                                self.genForm.separaForma(self.namE)
-                                self.msges.mensageBueno("<h1>Generado las Forma</h1>")                        
-                        elif evento=='Rompimiento':
-                                self.genLl.limpiar("formatoR")
-                                self.genLl.categorizar("CategoriaH","Hombre","HombreRompimiento",str(self.name),"formatoR")
-                                self.genLl.categorizar("CategoriaM","Mujer","MujerRompimiento",str(self.name),"formatoR")       
-                                self.genLl.generaPdf("participantesRompimiento%s"%self.namE,"formatoR")
-                                self.genLl.generarLlaves("llavesRompimiento%s"%self.namE,"Rompimiento")
-                                self.msges.mensageBueno("<h1>Generado llaves de rompimiento</h1>")
-                        elif evento=='TK5':
-                                llavetk=listEquiPDF.listEquiPdf(self.name)
-                                llavetk.enlistarEquipo("HombreRompimiento","EquiposHombre","Hombre")
-                                llavetk.enlistarEquipo("MujerRompimiento","EquiposMujer","Mujer")
-                                llavetk.salidaPDF(self.namE,self.dir)
-                                llaveTk=llavesTK5.llaveTk5(self.name)
-                                llaveTk.generarTk()
-                                llaveTk.salidaPDF(self.namE,self.dir)
-                                self.msges.mensageBueno("<h1>Generado de listas TK5 </h1>")
-                except Exception as e:
-                        raise e
-                        self.mensageMalo("Error {}".format(e.args[0]))
-                finally:
-                        QApplication.restoreOverrideCursor()
+                #try:
+                if evento=='Combate':
+                        self.genLl.limpiar("formato")
+                        self.genLl.categorizar("CategoriaH","Hombre","HombreCombate",str(self.name),"formato")
+                        self.genLl.categorizar("CategoriaM","Mujer","MujerCombate",str(self.name),"formato")
+                        self.genLl.generaPdf("participantes%s"%self.namE,"formato")
+                        self.genLl.generarLlaves("llavesCombate%s"%self.namE,"Combates")
+                        self.msges.mensageBueno("<h1>Generado las llaves</h1>")
+                elif evento=='Forma':
+                        self.genForm.clasificarForma("CategoriaH","Hombre","HombreForma",str(self.name))
+                        self.genForm.clasificarForma("CategoriaM","Mujer","MujerForma",str(self.name))
+                        self.genForm.separaForma(self.namE)
+                        self.msges.mensageBueno("<h1>Generado las Forma</h1>")                        
+                elif evento=='Rompimiento':
+                        self.genLl.limpiar("formatoR")
+                        self.genLl.categorizar("CategoriaH","Hombre","HombreRompimiento",str(self.name),"formatoR")
+                        self.genLl.categorizar("CategoriaM","Mujer","MujerRompimiento",str(self.name),"formatoR")       
+                        self.genLl.generaPdf("participantesRompimiento%s"%self.namE,"formatoR")
+                        self.genLl.generarLlaves("llavesRompimiento%s"%self.namE,"Rompimiento")
+                        self.msges.mensageBueno("<h1>Generado llaves de rompimiento</h1>")
+                elif evento=='TK5':
+                        llavetk=listEquiPDF.listEquiPdf(self.name)
+                        llavetk.enlistarEquipo("HombreRompimiento","EquiposHombre","Hombre")
+                        llavetk.enlistarEquipo("MujerRompimiento","EquiposMujer","Mujer")
+                        llavetk.salidaPDF(self.namE,self.dir)
+                        llaveTkl=llavesTK5.llaveTk5(self.name)
+                        llaveTkl.generarTk()
+                        llaveTkl.salidaPDF(self.namE,self.dir)
+                        self.msges.mensageBueno("<h1>Generado de listas TK5 </h1>")
+                #except Exception as e:
+                #        self.msges.mensageMalo("Error {}".format(e.args[0]))
+                #finally:
+                #        QApplication.restoreOverrideCursor()
         def openImg(self,elemento,tipo):
                 fileName,_ = QFileDialog.getOpenFileName(self, "Open File",QDir.currentPath())
                 if fileName:

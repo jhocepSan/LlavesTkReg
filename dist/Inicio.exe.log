@@ -1,0 +1,43 @@
+Traceback (most recent call last):
+  File "Registro.pyc", line 935, in generar
+TypeError: __init__() takes exactly 2 arguments (3 given)
+Traceback (most recent call last):
+  File "Registro.pyc", line 935, in generar
+TypeError: __init__() takes exactly 2 arguments (3 given)
+Traceback (most recent call last):
+  File "Registro.pyc", line 910, in generar
+  File "genLlave.pyc", line 74, in generaPdf
+TypeError: __init__() takes exactly 2 arguments (3 given)
+Traceback (most recent call last):
+  File "Registro.pyc", line 910, in generar
+  File "genLlave.pyc", line 74, in generaPdf
+  File "categorition.pyc", line 10, in __init__
+TypeError: must be type, not classobj
+Traceback (most recent call last):
+  File "Inicio.py", line 5, in <module>
+  File "Registro.pyc", line 8, in <module>
+  File "genLlave.pyc", line 3, in <module>
+  File "categorition.pyc", line 7, in <module>
+NameError: name 'Object' is not defined
+Traceback (most recent call last):
+  File "Inicio.py", line 5, in <module>
+  File "Registro.pyc", line 8, in <module>
+  File "genLlave.pyc", line 3, in <module>
+  File "categorition.pyc", line 7, in <module>
+NameError: name 'Object' is not defined
+Traceback (most recent call last):
+  File "Registro.pyc", line 916, in generar
+  File "formas.pyc", line 78, in separaForma
+TypeError: salidaPDF() takes exactly 1 argument (3 given)
+Traceback (most recent call last):
+  File "Registro.pyc", line 929, in generar
+TypeError: salidaPDF() takes exactly 1 argument (3 given)
+Traceback (most recent call last):
+  File "Registro.pyc", line 929, in generar
+TypeError: salidaPDF() takes exactly 1 argument (3 given)
+Traceback (most recent call last):
+  File "Registro.pyc", line 932, in generar
+TypeError: salidaPDF() takes exactly 1 argument (3 given)
+Traceback (most recent call last):
+  File "Registro.pyc", line 932, in generar
+TypeError: salidaPDF() takes exactly 1 argument (3 given)

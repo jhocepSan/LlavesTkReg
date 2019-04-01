@@ -4,10 +4,10 @@ import os.path as path
 import sqlite3
 from fpdf import FPDF
 
-class listaCategorias(object):
+class listaCategorias():
 	"""docstring for listaCategorias"""
 	def __init__(self,txt,dire):
-		super (listaCategorias, self).__init__()
+		#super (listaCategorias, self).__init__()
 		self.doc=FPDF('P','mm','A4')
 		self.doc.add_page()
 		self.dir=dire

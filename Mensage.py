@@ -3,8 +3,8 @@ from PySide.QtGui import *
 
 class Msg(QMessageBox):
 	"""docstring for Msg"""
-	def __init__(self, parent,dire):
-		super(Msg, self).__init__(parent)
+	def __init__(self,dire):
+		super(Msg, self).__init__()
 		self.dir=dire
 		self.imgBueno=QPixmap('%s/Imagenes/bien.png'%self.dir)
 		self.imgMalo=QPixmap('%s/Imagenes/error.png'%self.dir)

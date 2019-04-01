@@ -13,7 +13,7 @@ class kyruguis(QWidget):
 		self.contenedor=QHBoxLayout()
 		self.conteText=QGridLayout()
 		self.conteBuscar=QVBoxLayout()
-		self.msg=Mensage.Msg(self,self.dir)
+		self.msg=Mensage.Msg(self.dir)
 		self.vistMenu()
 		self.cargarText()
 		self.cargarEdit()

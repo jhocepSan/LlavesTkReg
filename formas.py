@@ -2,7 +2,7 @@ from PySide.QtGui import *
 from PySide.QtCore import *
 import sqlite3,os,formaPDF
 
-class forma(object):
+class forma():
 	def __init__(self,dire=""):
 		self.dirr=dire
 		self.dir='%s/baseData/listForm.db'%self.dirr

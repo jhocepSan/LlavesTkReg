@@ -8,7 +8,7 @@ class pumses(QWidget):
 		self.gradoL=["10mo","9no","8vo","7mo","6to","5to","4to","3ro","2do","1er"]
 		self.gradLE=[]
 		self.dir=dire
-		self.msg=Mensage.Msg(self,self.dir)
+		self.msg=Mensage.Msg(self.dir)
 		with open('%s/css/stylePumse.css'%self.dir) as f:
 			self.setStyleSheet(f.read())
 		self.conte=QGridLayout()

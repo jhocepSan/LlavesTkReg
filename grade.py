@@ -10,7 +10,7 @@ class grades(QWidget):
 		self.createTabla()
 		with open('%s/css/styleGrad.css'%self.dir) as f:
 			self.setStyleSheet(f.read())
-		self.msgAl=Mensage.Msg(self,self.dir)
+		self.msgAl=Mensage.Msg(self.dir)
 		self.contenedor=QGridLayout()
 		self.labe=["Principiantes","Novatos","Avanzados","Poom","Dan"]
 		self.texts=[]
