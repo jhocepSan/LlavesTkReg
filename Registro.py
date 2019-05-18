@@ -558,7 +558,7 @@ class ventanaR(QMainWindow):
                 lista.listaEstudiante("Mujer",nombre)
                 lista.salidaPDF(self.dir,nombre)
                 lista.cerrarDB()
-                self.mostrar(self,"listaGeneral%s"%nombre)
+                self.mostrar("listaGeneral%s"%nombre)
         def mostrarConf(self):
                 pass
         def mostrarSD(self,name):

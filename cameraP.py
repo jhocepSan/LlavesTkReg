@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 from PySide.QtGui import *
 from PySide.QtCore import *
-import cv2
+#import cv2
 class camaraCap(QMainWindow):
 	"""docstring for camaraCap"""
 	def __init__(self,dire):
