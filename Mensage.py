@@ -11,13 +11,13 @@ class Msg(QMessageBox):
 	def mensageBueno(self,msg):
 		self.setWindowTitle("CORRECTO")
 		self.setWindowIcon(QIcon('%s/Imagenes/bien.png'%self.dir))
-		self.setIconPixmap(self.imgBueno.scaled(40, 40,Qt.KeepAspectRatio))
+		self.setIconPixmap(self.imgBueno.scaled(50, 50,Qt.KeepAspectRatio))
 		self.setText(str(msg))
 		self.exec_()
 	def mensageMalo(self,msg):
 		self.setWindowTitle("ERROR")
 		self.setWindowIcon(QIcon('%s/Imagenes/error.png'%self.dir))
-		self.setIconPixmap(self.imgMalo.scaled(40, 40,Qt.KeepAspectRatio))
+		self.setIconPixmap(self.imgMalo.scaled(50, 50,Qt.KeepAspectRatio))
 		self.setText(str(msg))
 		self.exec_()
 		

@@ -1,0 +1,64 @@
+QLabel{
+	font-size: 20px;
+	color: #4B1508;
+}
+QLabel#img{
+	background-color: #A9A9F5;
+	border: 2px solid #4B1508;
+	border-radius: 25px;
+	text-align: center;
+}
+QLineEdit{
+	border: 1px solid #5E4EDC;
+	border-radius: 5px;
+	font-size: 18px;
+	vertical-align: middle;
+}
+QDateEdit{
+	font-size: 18px;
+	font-family: sans-serif;
+}
+QSpinBox{
+	font-size: 18px;
+	font-family: sans-serif;
+}
+QDoubleSpinBox{
+	font-size: 18px;
+	font-family: sans-serif;
+}
+QCheckBox{
+	color: #4B1508;
+	font-size: 18px
+}
+QComboBox{
+	background-color:#7FBEF7;
+	color:#BB13DC;
+	border: 1px solid #5E4EDC;
+	border-radius: 5px;
+	font-size: 18px;
+}
+QComboBox:hover{
+	background-color:#7FAEE7;
+}
+QCheckBox:hover{
+	background-color:#7FAEE7; 
+}
+QPushButton{
+	background-color:#7FBEF7;
+	color:#BB13DC;
+	border: 1px solid #5E4EDC;
+	border-radius: 5px;
+	font-size: 18px;
+}
+QPushButton:hover{
+	background-color: #7FAEE7;
+}
+QPushButton#redondo{
+	background-color:#7FBEF7;
+	color:#BB13DC;
+	border: 1px solid #5E4EDC;
+	border-radius: 50px;
+}
+QPushButton#redondo:hover{
+	background-color: #7FAEE7;		
+}

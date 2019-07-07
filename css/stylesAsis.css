@@ -1,0 +1,80 @@
+QMainWindow#ventanaR{background-color:#DCE4F9}
+QLabel{
+	font-size: 12px;
+	color: #4B1508;
+}
+QLabel#img{
+	background-color: #A9A9F5;
+	border: 2px solid #4B1508;
+	border-radius: 25px;
+}
+QGroupBox#busqueda{
+	background-color: #DBF6E7;
+	border: 1px solid #5E4EDC;
+	border-radius: 5px;
+	font-size: 20px;
+}
+QLineEdit{
+	border: 1px solid #5E4EDC;
+	border-radius: 5px;
+	font-size: 18px;
+	vertical-align: middle;
+}
+QSpinBox{
+	font-size: 18px;
+	font-family: sans-serif;
+}
+QDoubleSpinBox{
+	font-size: 18px;
+	font-family: sans-serif;
+}
+QCheckBox{
+	color: #4B1508;
+	font-size: 18px
+}
+QComboBox{
+	background-color:#7FBEF7;
+	color:#BB13DC;
+	border: 1px solid #5E4EDC;
+	border-radius: 5px;
+	font-size: 18px;
+}
+QComboBox:hover{
+	background-color:#7FAEE7;
+}
+QCheckBox:hover{
+	background-color:#7FAEE7; 
+}
+QPushButton{
+	background-color:#7FBEF7;
+	color:#BB13DC;
+	border: 1px solid #5E4EDC;
+	border-radius: 5px;
+	font-size: 18px;
+}
+QPushButton:hover{
+	background-color: #7FAEE7;
+}
+QPushButton#redondo{
+	background-color:#7FBEF7;
+	color:#BB13DC;
+	border: 1px solid #5E4EDC;
+	border-radius: 50px;
+}
+QPushButton#redondo:hover{
+	background-color: #7FAEE7;		
+}
+QTableWidget {
+	font-size: 20px;
+	font-family: sans-serif;
+    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #7FAEE7, stop:1 #DCE4F9);
+}
+
+QTableWidget::item {
+    border: 5px solid rgba(68, 119, 170, 10);
+    background-color:rgba(68, 119, 170, 2);
+}
+
+QHeaderView, QHeaderView::section {
+    background-color: rgba(180, 120, 120, 18);
+}
