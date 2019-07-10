@@ -2,7 +2,7 @@
 #-*- coding: utf-8 -*-
 from PySide.QtGui import *
 from PySide.QtCore import *
-import conector
+import conector,Mensage
 
 class GradoTec(QWidget):
 	"""Nomina de estudiantes del club"""
@@ -11,6 +11,7 @@ class GradoTec(QWidget):
 		self.setGeometry(0,0,885,630)
 		self.dir=dire
 		self.db=conector.Conector(self.dir)
+		self.msg=Mensage.Msg(self.dir)
 		with open('%s/css/stylesAsis.css'%self.dir) as f:
 			self.setStyleSheet(f.read())
 		self.myLabel()
@@ -29,6 +30,7 @@ class GradoTec(QWidget):
 		self.guardar.clicked.connect(self.save)
 		self.limpiar=QPushButton(QIcon("%s/Imagenes/limpiar.png"%self.dir),"Limpiar",self)
 		self.limpiar.setIconSize(QSize(30,30))
+		self.limpiar.clicked.connect(self.clear)
 		self.eliminar=QPushButton(QIcon('%s/Imagenes/borrar.png'%self.dir),"",self)
 		self.eliminar.setIconSize(QSize(70,70))
 		self.eliminar.setObjectName("redondo")
@@ -44,6 +46,17 @@ class GradoTec(QWidget):
 		self.eliminar.setGeometry(605,450,100,100)
 		self.imprimir.setGeometry(735,450,100,100)
 	def save(self):
-		pass
+		cont=0
+		self.db.delGrado()
+		while self.tabla.item(cont,0).text()!= "":
+			datos=[str(self.tabla.item(cont,0).text()).title().replace(' ',''),
+			str(self.tabla.item(cont,1).text()).upper().replace(' ',''),
+			str(self.tabla.item(cont,2).text()).title().replace(' ','')]
+			self.db.setGrado(datos)
+			cont+=1
+		self.msg.mensageBueno("<h1>Datos Guardados Correctamente</h1>")
 	def borrarBd(self):
-		pass
+		self.db.delGrado()
+	def clear(self):
+		self.tabla.clear()
+		self.tabla.setHorizontalHeaderLabels(["Cinturon","Sigla","Denominacion"])

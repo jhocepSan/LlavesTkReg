@@ -33,7 +33,7 @@ class mesR(QWidget):
 		self.tipoEs=QComboBox(self)
 		self.horario=QLineEdit(self)
 	def position(self):
-		self.ide.setGeometry(340,50,100,40)
+		self.ide.setGeometry(300,50,200,40)
 		self.mesInil.setGeometry(50,100,150,40)
 		self.gradoInil.setGeometry(50,150,150,40)
 		self.clubAnl.setGeometry(50,200,150,40)
@@ -47,3 +47,5 @@ class mesR(QWidget):
 		self.save.setGeometry(50,500,100,40)
 		self.clean.setGeometry(200,500,100,40)
 		self.salir.setGeometry(400,500,100,40)
+	def actualizar(self):
+		self.ide.setText(self.persona.getId())

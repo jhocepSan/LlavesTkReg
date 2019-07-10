@@ -18,7 +18,14 @@ class RegistraEst(QMdiSubWindow):
 		self.tec=tecR.tecR(self,self.dir,self.id)
 		self.mes=mesR.mesR(self,self.dir,self.id)
 		self.tab=QTabWidget(self)
+		self.tab.currentChanged.connect(self.actividad)
 		self.tab.addTab(self.reg,QIcon('%s/Imagenes/reg.png'%self.dir),"Personal")
 		self.tab.addTab(self.tec,QIcon('%s/Imagenes/tec.png'%self.dir),"Tecnico")
 		self.tab.addTab(self.mes,QIcon('%s/Imagenes/mesI.png'%self.dir),"Mensual")
 		self.setWidget(self.tab)
+	def actividad(self):
+		tab=self.tab.currentIndex()
+		if tab==1:
+			self.tec.actualizar()
+		elif tab==2:
+			self.mes.actualizar()
