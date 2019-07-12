@@ -14,6 +14,7 @@ class formR(QWidget):
 		self.dir=dire
 		self.dirBr=""
 		self.dirQr=""
+		self.dirFoto=""
 		self.setGeometry(0,0,885,630)
 		self.db=conector.Conector(self.dir)
 		self.msg=Mensage.Msg(self.dir)
@@ -27,17 +28,24 @@ class formR(QWidget):
 		self.position()
 	def texto(self):
 		self.nombrel=QLabel("Nombre: ",self)
+		self.nombrel.setStatusTip("Nombre del Estudiante")
 		self.apellidol=QLabel("Apellidos: ",self)
+		self.apellidol.setStatusTip("Apellido del Estudiante")
 		self.cil=QLabel("CI: ",self)
+		self.cil.setStatusTip("Cedula de Identidad")
 		self.fechaNl=QLabel("Fecha:\nNacimiento",self)
+		self.fechaNl.setStatusTip("Fecha de Nacimiento del Estudiante")
 		self.edadl=QLabel("Edad: ",self)
+		self.edadl.setStatusTip("Edad del Estudiante")
 		self.colegiol=QLabel("Colegio: ",self)
+		self.colegiol.setStatusTip("Colegio del Estudiante")
 		self.fotoEl=QLabel(self)
+		self.fotoEl.setStatusTip("Foto del Estudiante")
 		self.fotoEl.setObjectName("img")
 		self.fotoEl.setPixmap(QPixmap.fromImage(QImage('%s/Imagenes/psn.png'%self.dir)).scaled(400,300,Qt.KeepAspectRatio))
 		self.fotoEl.setAlignment(Qt.AlignCenter);
 		self.title=QLabel("Codigo QR",self)
-		self.id=QLabel("ID",self)
+		self.id=QLabel("",self)
 		self.qr=QLabel(self)
 		self.qr.setPixmap(QPixmap.fromImage(QImage('%s/Imagenes/qr.png'%self.dir)).scaled(250,200,Qt.KeepAspectRatio))
 		self.qr.setObjectName("img")
@@ -67,19 +75,24 @@ class formR(QWidget):
 		self.limpiar=QPushButton(QIcon('%s/Imagenes/limpiar.png'%self.dir),"Limpiar",self)
 		self.limpiar.clicked.connect(self.clear)
 		self.limpiar.setIconSize(QSize(35,35))
+		self.limpiar.setStatusTip("Borrar todos los campos")
 		self.guardar=QPushButton(QIcon('%s/Imagenes/save.png'%self.dir),"Guardar",self)
 		self.guardar.clicked.connect(self.save)
 		self.guardar.setIconSize(QSize(35,35))
+		self.guardar.setStatusTip("Guardar la Informacion")
 		self.escanQR=QPushButton(QIcon('%s/Imagenes/escanQr.png'%self.dir),"Escanear",self)
-		#self.genQR.clicked.connect(self.generarQr)
+		self.escanQR.clicked.connect(self.escanear)
 		self.escanQR.setIconSize(QSize(35,35))
+		self.escanQR.setStatusTip("Escanear el codigo del Estudiante")
 		self.imgE=QPushButton(QIcon('%s/Imagenes/foto.png'%self.dir),"",self)
 		self.imgE.setIconSize(QSize(75,75))
 		self.imgE.setObjectName("redondo")
+		self.imgE.setStatusTip("Sacar foto con la camara")
 		self.loadImg=QPushButton(QIcon('%s/Imagenes/img.png'%self.dir),"",self)
 		self.loadImg.setIconSize(QSize(80,80))
 		self.loadImg.setObjectName("redondo")
 		self.loadImg.clicked.connect(self.cargarFoto)
+		self.loadImg.setStatusTip("Cargar Imagen para el Estudiante")
 	def position(self):
 		self.nombrel.setGeometry(30,20,100,40)
 		self.nombre.setGeometry(140,20,150,40)
@@ -160,3 +173,23 @@ class formR(QWidget):
 		filename = code39.save(archivo)
 	def formalizar(self,elem):
 		elem.setText(elem.text().title())
+	def cargarFoto(self):
+		fileName,_ = QFileDialog.getOpenFileName(self,u"Buscar Imagen",QDir.currentPath())
+		nombre=unicode(self.id.text().replace(" ",""))
+		if (fileName and nombre!=""):
+			image = QImage(fileName)
+			if image.isNull():
+				QMessageBox.information(self, "Seleccione Una Imagen","error %s." % fileName)
+				return
+			else:
+				img=QPixmap.fromImage(image).scaled(400, 300,Qt.KeepAspectRatio)
+				self.fotoEl.setPixmap(img)
+				self.fotoEl.setAlignment(Qt.AlignCenter)
+				extencion=fileName[fileName.find('.'):]
+				direccion="%s/Imagenes/imgEstudiante/%s"%(str(os.getcwd()),str(nombre+extencion))
+				shutil.copyfile(fileName,direccion)
+				self.dirFoto=str(direccion)
+		else:
+			self.msg.mensageMalo("<h1>Intente Nuevamente\nColoque los datos personales</h1>")
+	def escanear(self):
+		pass

@@ -6,9 +6,10 @@ import sys,os,formR,tecR,mesR,Persona
 
 class RegistraEst(QMdiSubWindow):
 	"""Vista para Registro de Estudiante"""
-	def __init__(self, arg,dire):
+	def __init__(self, arg,dire,mdi):
 		super(RegistraEst, self).__init__(arg)
 		self.id=Persona.Persona()
+		self.mdi=mdi
 		self.setGeometry(0,0,885,630)
 		self.setWindowTitle("Registrar Estudiante")
 		self.dir=dire
@@ -16,7 +17,7 @@ class RegistraEst(QMdiSubWindow):
 			self.setStyleSheet(f.read())
 		self.reg=formR.formR(self,self.dir,self.id)
 		self.tec=tecR.tecR(self,self.dir,self.id)
-		self.mes=mesR.mesR(self,self.dir,self.id)
+		self.mes=mesR.mesR(self,self.dir,self.id,self.mdi)
 		self.tab=QTabWidget(self)
 		self.tab.currentChanged.connect(self.actividad)
 		self.tab.addTab(self.reg,QIcon('%s/Imagenes/reg.png'%self.dir),"Personal")

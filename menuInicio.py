@@ -57,7 +57,7 @@ class Example(QMainWindow):
 		self.toolbar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 		self.show()
 	def registraEstu(self):
-		regEst=registroEstu.RegistraEst(self,self.dir)
+		regEst=registroEstu.RegistraEst(self,self.dir,self.mdi)
 		self.mdi.addSubWindow(regEst)
 		regEst.show()
 	def registraAsis(self):

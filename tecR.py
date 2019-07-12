@@ -127,10 +127,12 @@ class tecR(QWidget):
 			self.grado.addItem(i[0])
 		info=self.db.getDatosTec(self.persona.getId())
 		if len(info) is not None:
+			self.grado.setCurrentIndex(self.grado.findText(info[2]))
 			self.altura.setValue(info[3])
 			self.peso.setValue(info[4])
 			self.phone.setText(unicode(info[5]))
 			self.tutor.setText(info[6])
 			self.phonet.setText(unicode(info[7]))
 			self.home.setText(info[8])
+			self.sangre.setCurrentIndex(self.sangre.findText(info[9]))
 			self.alergia.setText(info[10])
