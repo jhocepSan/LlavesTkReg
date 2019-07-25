@@ -2,13 +2,16 @@
 #-*- coding: utf-8 -*-
 from PySide.QtGui import *
 from PySide.QtCore import *
-
+import time
+import Mensage,conector
 class mesEstu(QWidget):
 	"""Vista de pago mensualidad estudiante"""
 	def __init__(self,parent,dire):
 		super(mesEstu, self).__init__(parent)
 		self.dir=dire
 		self.setGeometry(0,0,885,630)
+		self.msg=Mensage.Msg(self.dir)
+		self.db=conector.Conector(self.dir)
 		with open('%s/css/stylesAsis.css'%self.dir) as f:
 			self.setStyleSheet(f.read())
 		self.texto()
@@ -17,7 +20,9 @@ class mesEstu(QWidget):
 		self.position()
 	def texto(self):
 		self.nombrel=QLabel("<h2>Nombre: </h2>",self)
+		self.nombre=QLabel('',self)
 		self.apellidol=QLabel("<h2>Apellidos: </h2>",self)
+		self.apellido=QLabel('',self)
 		self.mesPayl=QLabel("<h2>Mensualidad: </h2>",self)
 		self.montoL=QLabel("<h2>Pago: </h2>",self)
 		self.nomPagol=QLabel("<h2>Tutor: </h2>",self)
@@ -39,7 +44,7 @@ class mesEstu(QWidget):
 		self.mesPay.addItem("Agosto",7)
 		self.mesPay.addItem("Septiembre",8)
 		self.mesPay.addItem("Actubre",9)
-		self.mesPay.addItem("Nobienbre",10)
+		self.mesPay.addItem("Noviembre",10)
 		self.mesPay.addItem("Diciembre",11)
 		self.monto=QSpinBox(self)
 		self.monto.setSuffix(" Bs")
@@ -82,7 +87,9 @@ class mesEstu(QWidget):
 	def position(self):
 		self.fotoEl.setGeometry(40,50,300,300)
 		self.nombrel.setGeometry(360,50,150,40)
+		self.nombre.setGeometry(510,50,200,40)
 		self.apellidol.setGeometry(360,100,150,40)
+		self.apellido.setGeometry(510,100,200,40)
 		self.qrEscaner.setGeometry(360,150,100,100)
 		self.mesPayl.setGeometry(470,150,150,40)
 		self.mesPay.setGeometry(630,150,200,40)
@@ -104,3 +111,13 @@ class mesEstu(QWidget):
 		pass
 	def salir(self):
 		self.close()
+	def actualizar(self,ide):
+		dato=self.db.getEstudiante('Varon',ide)
+		if len(dato) is not None:
+			self.nombre.setText("<h2>%s</h2>"%dato[1])
+			self.apellido.setText("<h2>%s</h2>"%dato[2])
+		else:
+			dato=self.db.getEstudiante('Mujer',ide)
+			if len(dato) is not None:
+				self.nombre.setText("<h2>%s</h2>"%dato[1])
+				self.apellido.setText("<h2>%s</h2>"%dato[2])

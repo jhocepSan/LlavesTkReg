@@ -20,3 +20,5 @@ class MenuPago(QMdiSubWindow):
 		self.tab.addTab(self.regiIng,QIcon('%s/Imagenes/ingreso.png'%self.dir),"Ingresos")
 		#self.tab.addTab(self.mesEs,QIcon('%s/Imagenes/mesI.png'%self.dir),"Egresos")
 		self.setWidget(self.tab)
+	def actualizar(self,ide):
+		self.mesEs.actualizar(ide);

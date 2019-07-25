@@ -17,12 +17,12 @@ class Conector(object):
 		cur.execute('CREATE TABLE IF NOT EXISTS Tecn(ID TEXT,Club TEXT,Grado TEXT,Altura REAL,Peso REAL,Phone NUMERIC,Tutor TEXT,PhoneT NUMERIC,Casa TEXT,Sangre TEXT,Alergia TEXT)')
 		cur.execute('CREATE TABLE IF NOT EXISTS MesIni(ID TEXT,FechaIni TEXT,GradoIni TEXT,Cluba TEXT,Modalidad TEXT,Horario TEXT)')
 		cur.execute('CREATE TABLE IF NOT EXISTS Club(Nombre TEXT,Sigla TEXT,Foto TEXT)')
-		cur.execute('CREATE TABLE IF NOT EXISTS Horario(Grupo TEXT,Instructor TEXT,HoraIni TEXT,HoraFin Text)')
+		cur.execute('CREATE TABLE IF NOT EXISTS Horario(Grupo TEXT,Instructor TEXT,HoraIni TEXT,HoraFin Text,Dias TEXT)')
 		cur.execute('CREATE TABLE IF NOT EXISTS Grados(Cinturon Text,Sigla TEXT,Denominacion TEXT)')
 		self.db.commit()
 		cur.close()
 	def setClub(self,dato):
-		if(len(self.getClub())==0):
+		if self.getClub()!=0:
 			cur=self.db.cursor()
 			cur.execute("INSERT INTO Club VALUES(?,?,?)",dato)
 		else:
@@ -32,11 +32,14 @@ class Conector(object):
 		self.db.commit()
 		cur.close()
 	def getClub(self):
-		cur=self.db.cursor()
-		cur.execute("SELECT * FROM Club")
-		datos=cur.fetchall()
-		cur.close()
-		return datos[0]
+		try:
+			cur=self.db.cursor()
+			cur.execute("SELECT * FROM Club")
+			datos=cur.fetchall()
+			cur.close()
+			return datos[0]
+		except IndexError:
+			return 0
 	def delHorarioClub(self):
 		cur=self.db.cursor()
 		cur.execute("DELETE FROM Horario")
@@ -45,7 +48,7 @@ class Conector(object):
 		cur.close()
 	def setHorario(self,dato):
 		cur=self.db.cursor()
-		cur.execute("INSERT INTO Horario VALUES(?,?,?,?)",dato)
+		cur.execute("INSERT INTO Horario VALUES(?,?,?,?,?)",dato)
 		self.db.commit()
 		cur.close()
 	def getHorario(self):
@@ -87,6 +90,13 @@ class Conector(object):
 			cur.execute("INSERT INTO %s VALUES(?,?,?,?,?,?,?)"%tabla,dato)
 			self.db.commit()
 			cur.close()
+	def getEstudiante(self,tabla,ide):
+		cur=self.db.cursor()
+		cur.execute("SELECT * FROM %s WHERE ID=:n"%str(tabla),{"n":str(ide)})
+		row=cur.fetchall()
+		cur.close()
+		self.db.commit()
+		return row[0]
 	def setDatoTec(self,dato):
 		cur=self.db.cursor()
 		cur.execute("SELECT * FROM Tecn WHERE ID=:n",{"n":str(dato[0])})

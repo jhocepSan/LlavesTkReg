@@ -46,17 +46,24 @@ class GradoTec(QWidget):
 		self.eliminar.setGeometry(605,450,100,100)
 		self.imprimir.setGeometry(735,450,100,100)
 	def save(self):
-		cont=0
-		self.db.delGrado()
-		while self.tabla.item(cont,0).text()!= "":
-			datos=[str(self.tabla.item(cont,0).text()).title().replace(' ',''),
-			str(self.tabla.item(cont,1).text()).upper().replace(' ',''),
-			str(self.tabla.item(cont,2).text()).title().replace(' ','')]
-			self.db.setGrado(datos)
-			cont+=1
-		self.msg.mensageBueno("<h1>Datos Guardados Correctamente</h1>")
+		try:
+			cont=0
+			self.db.delGrado()
+			while self.tabla.item(cont,0).text()!= "":
+				datos=[str(self.tabla.item(cont,0).text()).title().replace(' ',''),
+				str(self.tabla.item(cont,1).text()).upper().replace(' ',''),
+				str(self.tabla.item(cont,2).text()).title().replace(' ','')]
+				self.db.setGrado(datos)
+				cont+=1
+			self.msg.mensageBueno("<h1>Datos Guardados Correctamente</h1>")
+		except:
+			self.msg.mensageMalo("<h1>Error al Guardar Informacion</h1>")
 	def borrarBd(self):
-		self.db.delGrado()
+		try:
+			self.db.delGrado()
+			self.msg.mensageBueno("<h1>Borrado Correctamente</h1>")
+		except:
+			self.msg.mensageMalo("<h1>Error al Borrar</h1>")
 	def clear(self):
 		self.tabla.clear()
 		self.tabla.setHorizontalHeaderLabels(["Cinturon","Sigla","Denominacion"])
