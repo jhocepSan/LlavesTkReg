@@ -49,7 +49,7 @@ class GradoTec(QWidget):
 		try:
 			cont=0
 			self.db.delGrado()
-			while self.tabla.item(cont,0).text()!= "":
+			while self.tabla.item(cont,0)is not None:
 				datos=[str(self.tabla.item(cont,0).text()).title().replace(' ',''),
 				str(self.tabla.item(cont,1).text()).upper().replace(' ',''),
 				str(self.tabla.item(cont,2).text()).title().replace(' ','')]
@@ -64,6 +64,14 @@ class GradoTec(QWidget):
 			self.msg.mensageBueno("<h1>Borrado Correctamente</h1>")
 		except:
 			self.msg.mensageMalo("<h1>Error al Borrar</h1>")
+	def actualizar(self):
+		datos=self.db.getGrado()
+		cont=0
+		for i in datos:
+			self.tabla.setItem(cont , 0,QTableWidgetItem(str(i[0])))
+			self.tabla.setItem(cont , 1,QTableWidgetItem(str(i[1])))
+			self.tabla.setItem(cont , 2,QTableWidgetItem(str(i[2])))
+			cont+=1
 	def clear(self):
 		self.tabla.clear()
 		self.tabla.setHorizontalHeaderLabels(["Cinturon","Sigla","Denominacion"])

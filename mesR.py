@@ -56,8 +56,8 @@ class mesR(QWidget):
 		self.horario=QComboBox(self)
 		self.tablaH=QTableWidget(self)
 		self.tablaH.setRowCount(20)
-		self.tablaH.setColumnCount(4)
-		self.tablaH.setHorizontalHeaderLabels(["Grupo","Instructor","Inicio [24H]","Fin [24H]"])
+		self.tablaH.setColumnCount(5)
+		self.tablaH.setHorizontalHeaderLabels(["Grupo","Instructor","Inicio","Fin","Dias"])
 		self.tablaH.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
 	def position(self):
 		self.ide.setGeometry(300,50,200,40)
@@ -101,7 +101,8 @@ class mesR(QWidget):
 			self.tablaH.setItem(rown,0,QTableWidgetItem(str(i[0])))
 			self.tablaH.setItem(rown,1,QTableWidgetItem(str(i[1])))
 			self.tablaH.setItem(rown,2,QTableWidgetItem(str(i[2])))
-			self.tablaH.setItem(rown,3,QTableWidgetItem(i[3]))
+			self.tablaH.setItem(rown,3,QTableWidgetItem(str(i[3])))
+			self.tablaH.setItem(rown,4,QTableWidgetItem(str(i[4])))
 			self.horario.addItem(i[0])
 			rown+=1
 		dato=self.db.getDatoMes(self.persona.getId())

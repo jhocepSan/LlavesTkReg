@@ -17,7 +17,14 @@ class ToolsClub(QMdiSubWindow):
 		self.grado=gradoTec.GradoTec(self,self.dir)
 		#self.mes=mesR.mesR(self,self.dir)
 		self.tab=QTabWidget(self)
+		self.tab.currentChanged.connect(self.actividad)
 		self.tab.addTab(self.horario,QIcon('%s/Imagenes/horario.png'%self.dir),"Horarios")
 		self.tab.addTab(self.grado,QIcon('%s/Imagenes/tecnico.png'%self.dir),"Tecnico")
 		#self.tab.addTab(self.mes,QIcon('%s/Imagenes/mesI.png'%self.dir),"Mensual")
 		self.setWidget(self.tab)
+	def actividad(self):
+		tab=self.tab.currentIndex()
+		if tab==0:
+			self.horario.actualizar()
+		elif tab==1:
+			self.grado.actualizar()

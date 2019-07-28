@@ -97,6 +97,21 @@ class Conector(object):
 		cur.close()
 		self.db.commit()
 		return row[0]
+	def getEstudiante(self,ide):
+		cur=self.db.cursor()
+		cur.execute("SELECT * FROM Mujer WHERE ID=:n",{"n":str(ide)})
+		row=cur.fetchall()
+		if len(row)!=0:
+			return row[0]
+		else:
+			cur.execute("SELECT * FROM Varon WHERE ID=:n",{"n":str(ide)})
+			row=cur.fetchall()
+			if len(row)!=0:
+				return row[0]
+			else:
+				return []
+		self.db.commit()
+		cur.close()
 	def setDatoTec(self,dato):
 		cur=self.db.cursor()
 		cur.execute("SELECT * FROM Tecn WHERE ID=:n",{"n":str(dato[0])})
@@ -141,3 +156,10 @@ class Conector(object):
 		self.db.commit()
 		cur.close()
 		return row[0]
+	def getDatoMesH(self,hora):
+		cur=self.db.cursor()
+		cur.execute("SELECT * FROM MesIni WHERE Horario=:n",{"n":str(hora)})
+		row=cur.fetchall()
+		self.db.commit()
+		cur.close()
+		return row

@@ -80,20 +80,21 @@ class HorarioClub(QWidget):
 	def save(self):
 		self.db.delHorarioClub()
 		cont=0
-		#try:
-		club=[unicode(self.nomClub.text()),self.sigla.text(),self.dirImg]
-		self.db.setClub(club)
-		while self.tabla.item(cont,0).text()!=' ':
-			dias=str(self.buscarDias(cont))
-			dataHor=[str(self.tabla.item(cont,0).text()).replace(' ',''),
-			str(self.tabla.item(cont,1).text()).title(),
-			str(self.tabla.item(cont,2).text()).replace(' ',''),
-			str(self.tabla.item(cont,3).text()).replace(' ',''),dias]
-			self.db.setHorario(dataHor)
-			cont+=1
-		self.msges.mensageBueno("<h1>Se Guardo Correctamente</h1>")
-		#except:
-		#	self.msges.mensageMalo("<h1>Un Problema al guardar La información</h1>")
+		try:
+			club=[unicode(self.nomClub.text()),self.sigla.text(),self.dirImg]
+			self.db.setClub(club)
+			while self.tabla.item(cont,0).text()!=' ':
+				dias=str(self.buscarDias(cont))
+				dataHor=[str(self.tabla.item(cont,0).text()).replace(' ',''),
+				str(self.tabla.item(cont,1).text()).title(),
+				str(self.tabla.item(cont,2).text()).replace(' ',''),
+				str(self.tabla.item(cont,3).text()).replace(' ',''),dias]
+				self.db.setHorario(dataHor)
+				cont+=1
+		except AttributeError:
+			self.msges.mensageBueno("<h1>Se Guardo Correctamente</h1>")
+		else:
+			self.msges.mensageMalo("<h1>Un Problema al guardar La información</h1>")
 	def buscarDias(self,cont):
 		diaT=""
 		dia=4
@@ -136,7 +137,29 @@ class HorarioClub(QWidget):
 		self.tabla.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
 		self.dirImg=""
 	def actualizar(self):
-		pass
+		club=self.db.getClub()
+		self.nomClub.setText(club[0])
+		self.sigla.setText(club[1])
+		img=QPixmap.fromImage(QImage(club[2])).scaled(180,180,Qt.KeepAspectRatio)
+		self.imgClb.setPixmap(img)
+		self.imgClb.setAlignment(Qt.AlignCenter)
+		datos=self.db.getHorario()
+		cont=0
+		for i in datos:
+			self.tabla.setItem(cont , 0,QTableWidgetItem(str(i[0])))
+			self.tabla.setItem(cont , 1,QTableWidgetItem(str(i[1])))
+			self.tabla.setItem(cont , 2,QTableWidgetItem(str(i[2])))
+			self.tabla.setItem(cont , 3,QTableWidgetItem(str(i[3])))
+			self.cargarDia(cont,i[4])
+			cont+=1
+	def cargarDia(self,fila,dato):
+		dia=4;
+		for i in ["Lunes","Martes","Miercoles","Jueves","Viernes","Sabado","Domingo"]:
+			if dato.find(i)>=0:
+				self.tabla.setItem(fila , dia,QTableWidgetItem('y'))
+			else:
+				self.tabla.setItem(fila , dia,QTableWidgetItem('n'))
+			dia+=1
 	def borrarBd(self):
 		try:
 			self.db.delHorarioClub()

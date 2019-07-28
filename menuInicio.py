@@ -7,7 +7,7 @@ import sys,registroEstu,Registro,regAsis,pagoMes,tools
 class Example(QMainWindow):    
 	def __init__(self):
 		super(Example, self).__init__()
-		self.dir="F:/LlavesTkReg"
+		self.dir="."#"F:/LlavesTkReg"
 		self.setGeometry(100, 50, 1000, 650)
 		self.setWindowTitle('Sequimiento Club')
 		self.statusBar().showMessage("Mucho Gusto")
