@@ -22,11 +22,6 @@ class mesR(QWidget):
 		self.position()
 	def texto(self):
 		self.ide=QLabel("%s"%self.persona.getId(),self)
-		self.mesInil=QLabel("<h1>Fecha Inicio</h1>",self)
-		self.gradoInil=QLabel("<h1>Grado Inicial</h1>",self)
-		self.clubAnl=QLabel("<h1>Club Anterio</h1>",self)
-		self.tipoEsl=QLabel("<h1>Modalidad</h1>",self)
-		self.horariol=QLabel("<h1>Horario</h1>",self)
 	def botones(self):
 		self.save=QPushButton(QIcon('%s/Imagenes/save.png'%self.dir),"Guardar",self)
 		self.save.clicked.connect(self.guardar)
@@ -52,7 +47,7 @@ class mesR(QWidget):
 		self.tipoEs=QComboBox(self)
 		self.tipoEs.addItem("Normal")
 		self.tipoEs.addItem("Media Veca")
-		self.tipoEs.addItem("Vecado")
+		self.tipoEs.addItem("Becado")
 		self.horario=QComboBox(self)
 		self.tablaH=QTableWidget(self)
 		self.tablaH.setRowCount(20)

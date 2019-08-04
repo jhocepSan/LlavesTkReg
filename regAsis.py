@@ -33,6 +33,7 @@ class RegistraAsis(QMdiSubWindow):
 		self.tabla.setHorizontalHeaderLabels(["ID","Nombre","Apellido","Presente?"])
 		self.tabla.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
 		self.tabla.itemSelectionChanged.connect(self.activado)
+		self.ide=QLineEdit(self)
 	def myButton(self):
 		self.validar=QPushButton(QIcon("%s/Imagenes/bien.png"%self.dir),"",self)
 		self.validar.setIconSize(QSize(60,60))
@@ -41,6 +42,9 @@ class RegistraAsis(QMdiSubWindow):
 		self.grupo.setIconSize(QSize(30,30))
 		self.grupoLoad()
 		self.grupo.activated.connect(self.cargaDato)
+		self.botonBuscar=QPushButton("Buscar",self)
+		self.botonBuscar.setObjectName("redondo")
+		self.botonBuscar.clicked.connect(self.buscarId)
 		self.botonSave=QPushButton(QIcon('%s/Imagenes/save.png'%self.dir),"Guardar",self)
 		self.botonSave.setIconSize(QSize(30,30))
 		self.botonClear=QPushButton(QIcon('%s/Imagenes/limpiar.png'%self.dir),"Limpiar",self)
@@ -51,6 +55,8 @@ class RegistraAsis(QMdiSubWindow):
 		self.fila=self.tabla.currentRow()
 		self.timer.start(1000)
 		self.option.show()
+	def buscarId(self):
+		pass
 	def runOption(self):
 		if self.option.salio():
 			self.tabla.setItem(self.fila , 3,QTableWidgetItem(str(self.option.getTipo())))
@@ -78,7 +84,9 @@ class RegistraAsis(QMdiSubWindow):
 		self.fotoEl.setGeometry(40,100,300,300)
 		self.tabla.setGeometry(360,50,500,500)
 		self.validar.setGeometry(50,410,100,100)
+		self.botonBuscar.setGeometry(50,520,100,100)
 		self.grupo.setGeometry(160,410,150,40)
-		self.botonSave.setGeometry(50,570,100,40)
+		self.ide.setGeometry(160,460,150,40)
+		self.botonSave.setGeometry(150,570,100,40)
 		self.botonClear.setGeometry(390,570,100,40)
 		self.botonSalir.setGeometry(735,570,100,40)

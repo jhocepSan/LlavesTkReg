@@ -4,7 +4,7 @@ from PySide.QtGui import *
 from PySide.QtCore import *
 import pybase64,conector,Mensage
 import Base64SIN,prRc4,verhoeff
-import qrcode,barcode,time
+import qrcode,barcode,time,buscar
 
 class formR(QWidget):
 	"""docstring for formR"""
@@ -15,13 +15,13 @@ class formR(QWidget):
 		self.dirBr=""
 		self.dirQr=""
 		self.dirFoto=""
-		self.setGeometry(0,0,885,630)
 		self.db=conector.Conector(self.dir)
 		self.msg=Mensage.Msg(self.dir)
 		self.verf=verhoeff.verhoeff()
 		self.b64=Base64SIN.base64sin()
 		with open('%s/css/stylesMenu.css'%self.dir) as f:
 			self.setStyleSheet(f.read())
+		self.buscare=buscar.buscarEst(self)
 		self.texto()
 		self.inTex()
 		self.botones()
@@ -31,14 +31,14 @@ class formR(QWidget):
 		self.nombrel.setStatusTip("Nombre del Estudiante")
 		self.apellidol=QLabel("Apellidos: ",self)
 		self.apellidol.setStatusTip("Apellido del Estudiante")
-		self.cil=QLabel("CI: ",self)
+		self.cil=QLabel("# Carnet : ",self)
 		self.cil.setStatusTip("Cedula de Identidad")
-		self.fechaNl=QLabel("Fecha:\nNacimiento",self)
+		self.fechaNl=QLabel("Fecha\nNacimiento:",self)
 		self.fechaNl.setStatusTip("Fecha de Nacimiento del Estudiante")
 		self.edadl=QLabel("Edad: ",self)
 		self.edadl.setStatusTip("Edad del Estudiante")
-		self.colegiol=QLabel("Colegio: ",self)
-		self.colegiol.setStatusTip("Colegio del Estudiante")
+		self.lugarl=QLabel("Lugar\nNacimiento: ",self)
+		self.lugarl.setStatusTip("Colegio del Estudiante")
 		self.fotoEl=QLabel(self)
 		self.fotoEl.setStatusTip("Foto del Estudiante")
 		self.fotoEl.setObjectName("img")
@@ -66,10 +66,10 @@ class formR(QWidget):
 		self.ci=QLineEdit(self)
 		self.fechaN=QDateEdit(self)
 		self.fechaN.dateChanged.connect(self.setEdad)
+		self.lugar=QLineEdit(self)
+		self.lugar.editingFinished.connect(lambda:self.formalizar(self.lugar))
 		self.edad=QSpinBox(self)
-		self.edad.setSuffix(u'  años')
-		self.colegio=QLineEdit(self)
-		self.colegio.editingFinished.connect(lambda:self.formalizar(self.colegio))
+		self.edad.setSuffix(u'años')
 		self.compromiso=QCheckBox("Firma\nDocumento",self)
 	def botones(self):
 		self.limpiar=QPushButton(QIcon('%s/Imagenes/limpiar.png'%self.dir),"Limpiar",self)
@@ -88,37 +88,42 @@ class formR(QWidget):
 		self.imgE.setIconSize(QSize(75,75))
 		self.imgE.setObjectName("redondo")
 		self.imgE.setStatusTip("Sacar foto con la camara")
+		self.eliminar=QPushButton(QIcon('%s/Imagenes/borrar.png'%self.dir),"Eliminar",self)
+		self.eliminar.setIconSize(QSize(35,35))
+		self.eliminar.clicked.connect(self.eliminarE)
 		self.loadImg=QPushButton(QIcon('%s/Imagenes/img.png'%self.dir),"",self)
 		self.loadImg.setIconSize(QSize(80,80))
 		self.loadImg.setObjectName("redondo")
 		self.loadImg.clicked.connect(self.cargarFoto)
 		self.loadImg.setStatusTip("Cargar Imagen para el Estudiante")
 	def position(self):
-		self.nombrel.setGeometry(30,20,100,40)
-		self.nombre.setGeometry(140,20,150,40)
-		self.apellidol.setGeometry(30,70,100,40)
-		self.apellido.setGeometry(140,70,150,40)
-		self.cil.setGeometry(30,120,100,40)
-		self.ci.setGeometry(140,120,150,40)
-		self.fechaNl.setGeometry(30,170,100,40)
-		self.fechaN.setGeometry(140,170,150,40)
-		self.edadl.setGeometry(30,220,100,40)
-		self.edad.setGeometry(140,220,150,40)
-		self.colegiol.setGeometry(30,270,100,40)
-		self.colegio.setGeometry(140,270,150,40)
-		self.qr.setGeometry(30,340,250,200)
-		self.fotoEl.setGeometry(310,20,400,300)
-		self.title.setGeometry(310,415,100,40)
-		self.id.setGeometry(350,330,300,40)
-		self.br.setGeometry(420,380,200,100)
-		self.eh.setGeometry(730,20,100,40)
-		self.em.setGeometry(730,70,100,40)
-		self.compromiso.setGeometry(730,120,150,70)
-		self.limpiar.setGeometry(720,200,130,40)
-		self.guardar.setGeometry(720,250,130,40)
-		self.escanQR.setGeometry(720,300,130,50)
-		self.loadImg.setGeometry(640,370,100,100)
-		self.imgE.setGeometry(750,370,100,100)
+		self.nombrel.setGeometry(20,20,120,40)
+		self.nombre.setGeometry(150,20,200,40)
+		self.apellidol.setGeometry(20,70,120,40)
+		self.apellido.setGeometry(150,70,200,40)
+		self.cil.setGeometry(20,120,120,40)
+		self.ci.setGeometry(150,120,200,40)
+		self.fechaNl.setGeometry(20,170,120,40)
+		self.fechaN.setGeometry(150,170,200,40)
+		self.lugarl.setGeometry(20,220,120,40)
+		self.lugar.setGeometry(150,220,200,40)
+		self.edadl.setGeometry(20,270,120,40)
+		self.edad.setGeometry(150,270,200,40)
+		self.eh.setGeometry(370,20,100,40)
+		self.em.setGeometry(370,70,100,40)
+		self.compromiso.setGeometry(370,110,150,70)
+		self.fotoEl.setGeometry(520,20,200,200)
+		self.loadImg.setGeometry(370,240,100,100)
+		self.escanQR.setGeometry(490,265,130,50)
+		self.imgE.setGeometry(640,240,100,100)
+		self.id.setGeometry(370,360,300,40)
+		self.qr.setGeometry(70,340,250,200)
+		self.title.setGeometry(110,360,120,40)
+		self.buscare.setGeometry(370,420,350,150)
+		self.guardar.setGeometry(740,30,130,40)
+		self.limpiar.setGeometry(740,90,130,40)
+		self.eliminar.setGeometry(740,150,130,40)
+		self.br.setGeometry(760,210,200,100)
 	def clear(self):
 		self.dirQr=""
 		self.dirBr=""
@@ -192,4 +197,6 @@ class formR(QWidget):
 		else:
 			self.msg.mensageMalo("<h1>Intente Nuevamente\nColoque los datos personales</h1>")
 	def escanear(self):
+		pass
+	def eliminarE(self):
 		pass

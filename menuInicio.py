@@ -8,7 +8,7 @@ class Example(QMainWindow):
 	def __init__(self):
 		super(Example, self).__init__()
 		self.dir="."#"F:/LlavesTkReg"
-		self.setGeometry(100, 50, 1000, 650)
+		self.setGeometry(10, 50, 1800, 750)
 		self.setWindowTitle('Sequimiento Club')
 		self.statusBar().showMessage("Mucho Gusto")
 		self.setWindowIcon(QIcon('%s/Imagenes/Logo.png'%self.dir))
@@ -19,19 +19,19 @@ class Example(QMainWindow):
 		exitAction = QAction(QIcon('%s/Imagenes/salir.png'%self.dir), 'Salir App',self,
 			shortcut="Ctrl+X",statusTip="Salir de la aplicacion",
 			triggered=self.salir)
-		initMes=QAction(QIcon('%s/Imagenes/registro.png'%self.dir),"Registrar Estudiante",
+		initMes=QAction(QIcon('%s/Imagenes/registro.png'%self.dir),"Registrar\nEstudiante",
 			self,shortcut="Ctrl+R",statusTip="Registrar Estudiante al Club",
 			triggered=self.registraEstu)
-		asisClub=QAction(QIcon('%s/Imagenes/asistencia.png'%self.dir),"Control Asistencia",
+		asisClub=QAction(QIcon('%s/Imagenes/asistencia.png'%self.dir),"Control\nAsistencia",
 			self,shortcut="Ctrl+C",statusTip="Controlar Asistencia del Estudiante",
 			triggered=self.registraAsis)
 		pagoMes=QAction(QIcon('%s/Imagenes/pago.png'%self.dir),"Registrar Pago",
 			self,shortcut="Ctrl+P",statusTip="Registrar Mensualidad del Estudiante",
 			triggered=self.pagarMes)
-		examenMes=QAction(QIcon('%s/Imagenes/examen.png'%self.dir),"Examen Estudiante",self,
+		examenMes=QAction(QIcon('%s/Imagenes/examen.png'%self.dir),"Examen\nEstudiante",self,
 			shortcut="Ctrl+E",statusTip='Realizar Examen del Club',
 			triggered=self.registraEstu)
-		listaEst=QAction(QIcon('%s/Imagenes/listaEvento.png'%self.dir),"Lista Estudiante",self,
+		listaEst=QAction(QIcon('%s/Imagenes/listaEvento.png'%self.dir),"Lista\nEstudiante",self,
 			shortcut="Ctrl+L",statusTip='Lista de Estudiantes del Club',
 			triggered=self.nominaEstu)
 		eventoMes=QAction(QIcon('%s/Imagenes/evento.png'%self.dir),"Evento tk",self,
@@ -51,7 +51,7 @@ class Example(QMainWindow):
 		self.toolbar.addSeparator()
 		self.toolbar.addAction(configurar)
 		self.toolbar.addAction(exitAction)            
-		self.toolbar.setIconSize(QSize(60,60))
+		self.toolbar.setIconSize(QSize(50,50))
 		self.toolbar.setOrientation(Qt.Vertical)
 		self.addToolBar(Qt.LeftToolBarArea, self.toolbar)
 		self.toolbar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)

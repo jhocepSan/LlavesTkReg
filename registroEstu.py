@@ -10,7 +10,7 @@ class RegistraEst(QMdiSubWindow):
 		super(RegistraEst, self).__init__(arg)
 		self.id=Persona.Persona()
 		self.mdi=mdi
-		self.setGeometry(0,0,885,630)
+		self.setGeometry(0,0,1050,695)
 		self.setWindowTitle("Registrar Estudiante")
 		self.dir=dire
 		with open('%s/css/styleMen.css'%self.dir) as f:
@@ -22,7 +22,7 @@ class RegistraEst(QMdiSubWindow):
 		self.tab.currentChanged.connect(self.actividad)
 		self.tab.addTab(self.reg,QIcon('%s/Imagenes/reg.png'%self.dir),"Personal")
 		self.tab.addTab(self.tec,QIcon('%s/Imagenes/tec.png'%self.dir),"Tecnico")
-		self.tab.addTab(self.mes,QIcon('%s/Imagenes/mesI.png'%self.dir),"Mensual")
+		self.tab.addTab(self.mes,QIcon('%s/Imagenes/historial.png'%self.dir),"Historial")
 		self.setWidget(self.tab)
 	def actividad(self):
 		tab=self.tab.currentIndex()
