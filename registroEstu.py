@@ -26,7 +26,10 @@ class RegistraEst(QMdiSubWindow):
 		self.setWidget(self.tab)
 	def actividad(self):
 		tab=self.tab.currentIndex()
-		if tab==1:
-			self.tec.actualizar()
-		elif tab==2:
-			self.mes.actualizar()
+		if self.id.getId()!='':
+			if tab==1:
+				self.tec.actualizar()
+			elif tab==2:
+				self.mes.actualizar()
+		else:
+			self.tab.setCurrentIndex(0)

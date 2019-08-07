@@ -7,7 +7,7 @@ import Base64SIN,prRc4,verhoeff
 import qrcode,barcode,time,buscar
 
 class formR(QWidget):
-	"""docstring for formR"""
+	"""Formulario de registro del estudiante"""
 	def __init__(self,parent,dire,ide):
 		super(formR, self).__init__(parent)
 		self.persona=ide
@@ -21,7 +21,9 @@ class formR(QWidget):
 		self.b64=Base64SIN.base64sin()
 		with open('%s/css/stylesMenu.css'%self.dir) as f:
 			self.setStyleSheet(f.read())
-		self.buscare=buscar.buscarEst(self)
+		self.buscare=buscar.buscarEst(self,self.dir)
+		self.buscare.clicked.connect(self.actualizar)
+		self.timer=QTimer(self)
 		self.texto()
 		self.inTex()
 		self.botones()
@@ -69,7 +71,7 @@ class formR(QWidget):
 		self.lugar=QLineEdit(self)
 		self.lugar.editingFinished.connect(lambda:self.formalizar(self.lugar))
 		self.edad=QSpinBox(self)
-		self.edad.setSuffix(u'años')
+		self.edad.setSuffix(u' años')
 		self.compromiso=QCheckBox("Firma\nDocumento",self)
 	def botones(self):
 		self.limpiar=QPushButton(QIcon('%s/Imagenes/limpiar.png'%self.dir),"Limpiar",self)
@@ -119,7 +121,7 @@ class formR(QWidget):
 		self.id.setGeometry(370,360,300,40)
 		self.qr.setGeometry(70,340,250,200)
 		self.title.setGeometry(110,360,120,40)
-		self.buscare.setGeometry(370,420,350,150)
+		self.buscare.setGeometry(370,420,400,150)
 		self.guardar.setGeometry(740,30,130,40)
 		self.limpiar.setGeometry(740,90,130,40)
 		self.eliminar.setGeometry(740,150,130,40)
@@ -127,12 +129,13 @@ class formR(QWidget):
 	def clear(self):
 		self.dirQr=""
 		self.dirBr=""
+		self.id.setText('')
 		self.nombre.clear()
 		self.apellido.clear()
 		self.ci.clear()
 		self.fechaN.clear()
+		self.lugar.clear()
 		self.edad.clear()
-		self.colegio.clear()
 		self.fotoEl.setPixmap(QPixmap.fromImage(QImage('%s/Imagenes/psn.png'%self.dir)).scaled(400,300,Qt.KeepAspectRatio))
 		self.qr.setPixmap(QPixmap.fromImage(QImage('%s/Imagenes/qr.png'%self.dir)).scaled(250,200,Qt.KeepAspectRatio))
 		self.br.setPixmap(QPixmap.fromImage(QImage('%s/Imagenes/br.png'%self.dir)).scaled(200,100,Qt.KeepAspectRatio))
@@ -144,15 +147,14 @@ class formR(QWidget):
 			if(self.em.isChecked()):
 				self.eh.setCheckState(Qt.CheckState(False))
 	def setEdad(self):
-		year= self.fechaN.date().toString('MMMM d,yyyy')
-		year=int(year[year.find(',')+1:])
+		year=int(self.fechaN.date().toString('yyyy'))
 		self.edad.setValue(int(time.strftime('%Y'))-year)
 	def save(self):
 		self.generarQr()
 		try:
 			info=[self.id.text(),unicode(self.nombre.text()),unicode(self.apellido.text()),
-				self.ci.text(),str(self.fechaN.date().toString('MMMM d,yyyy')),self.edad.value(),
-				unicode(self.colegio.text())]
+				self.ci.text(),self.fechaN.date().toString('yyyy-M-d'),
+				unicode(self.lugar.text()),self.edad.value()]
 			if self.eh.isChecked():
 				self.db.setEstudiante('Varon',info)
 			elif self.em.isChecked():
@@ -199,4 +201,34 @@ class formR(QWidget):
 	def escanear(self):
 		pass
 	def eliminarE(self):
-		pass
+		genero=''
+		if self.em.isChecked():
+			genero='Mujer'
+		else:
+			genero='Varon'
+		try:
+			self.db.delEstudiante(self.id.text(),genero)
+			self.msg.mensageBueno("<h1>Se elimino el Estudiante:\n%s</h1>"%str(self.id.text()))
+		except :
+			self.msg.mensageMalo("<h1>Ocurrio un Problema al\neliminar estudiante</h1>")
+	def actualizar(self):
+		datos=self.buscare.getPersona()
+		if len(datos)!=0:
+			persona=datos[0]
+			self.timer.stop()
+			if datos[1]=='Varon':
+				self.eh.setChecked(True)
+			else:
+				self.em.setChecked(True)
+			self.id.setText(persona[0])
+			self.nombre.setText(persona[1])
+			self.apellido.setText(persona[2])
+			self.ci.setText(unicode(persona[3]))
+			fecha=persona[4].split('-')
+			self.fechaN.setDate(QDate(int(fecha[0]),int(fecha[1]),int(fecha[2])))
+			self.lugar.setText(persona[5])
+			self.edad.setValue(int(persona[6]))
+			self.persona.setId(unicode(self.id.text()))
+		else:
+			self.timer.start(1000)
+			self.timer.timeout.connect(self.actualizar)

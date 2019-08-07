@@ -7,6 +7,7 @@ class tecR(QWidget):
 	"""docstring for formR"""
 	def __init__(self,parent,dire,ide):
 		super(tecR, self).__init__(parent)
+		self.elementos=False
 		self.persona=ide
 		self.dir=dire
 		self.db=conector.Conector(self.dir)
@@ -75,7 +76,7 @@ class tecR(QWidget):
 		self.tipoEs.addItem("Media Beca")
 		self.tipoEs.addItem("Becado")
 		self.horario=QComboBox(self)
-		self.tutor=tutores.tutorReg(self,self.dir)
+		self.tutor=tutores.tutorReg(self,self.dir,self.persona)
 	def formalizar(self,elem):
 		elem.setText(elem.text().title())
 	def botones(self):
@@ -121,15 +122,19 @@ class tecR(QWidget):
 		self.phone.setGeometry(160,280,150,40)
 		self.mesIni.setGeometry(160,330,150,40)
 		self.tipoEs.setGeometry(160,380,150,40)
-		self.tablaH.setGeometry(480,430,400,180)
+		self.tablaH.setGeometry(480,430,500,150)
 		self.guardar.setGeometry(50,550,100,40)
 		self.limpiar.setGeometry(300,550,100,40)
 	def save(self):
 		try:
 			datos=[self.ide.text(),unicode(self.club.currentText()),self.grado.currentText(),
-			self.altura.value(),self.peso.value(),int(self.phone.text()),unicode(self.tutor.text()),
-			int(self.phonet.text()),unicode(self.home.text()),self.sangre.currentText(),unicode(self.alergia.text())]
+			self.altura.value(),self.peso.value(),int(self.phone.text()),
+			unicode(self.home.text()),self.sangre.currentText(),unicode(self.alergia.text())]
 			self.db.setDatoTec(datos)
+			datos=[self.ide.text(),self.mesIni.date().toString('yyyy-M-d'),
+			self.gradoIni.currentText(),self.clubAn.text(),self.tipoEs.currentText(),
+			self.horario.currentText()]
+			self.db.setDatoMes(datos)
 			self.msg.mensageBueno("<h1>Datos Guardados Correctamente</h1>")
 		except:
 			self.msg.mensageMalo("<h1>Error Al Guardar</h1>")
@@ -143,20 +148,41 @@ class tecR(QWidget):
 		self.alergia.clear()
 	def actualizar(self):
 		self.ide.setText(self.persona.getId())
-		datos=self.db.getClub()
-		self.club.addItem(QIcon(datos[2]),datos[0])
-		self.fotoC.setPixmap(QPixmap.fromImage(QImage(datos[2])).scaled(400,300,Qt.KeepAspectRatio))
-		grado=self.db.getGrado()
-		for i in grado:
-			self.grado.addItem(i[0])
-		info=self.db.getDatosTec(self.persona.getId())
-		if len(info) is not None:
-			self.grado.setCurrentIndex(self.grado.findText(info[2]))
-			self.altura.setValue(info[3])
-			self.peso.setValue(info[4])
-			self.phone.setText(unicode(info[5]))
-			self.tutor.setText(info[6])
-			self.phonet.setText(unicode(info[7]))
-			self.home.setText(info[8])
-			self.sangre.setCurrentIndex(self.sangre.findText(info[9]))
-			self.alergia.setText(info[10])
+		if not self.elementos:
+			datos=self.db.getClub()
+			self.club.addItem(QIcon(datos[2]),datos[0])
+			self.fotoC.setPixmap(QPixmap.fromImage(QImage(datos[2])).scaled(400,300,Qt.KeepAspectRatio))
+			grado=self.db.getGrado()
+			for i in grado:
+				self.grado.addItem(i[0])
+				self.gradoIni.addItem(i[0])
+			datos=self.db.getHorario()
+			rown=0
+			for i in datos:
+				self.tablaH.setItem(rown,0,QTableWidgetItem(str(i[0])))
+				self.tablaH.setItem(rown,1,QTableWidgetItem(str(i[1])))
+				self.tablaH.setItem(rown,2,QTableWidgetItem(str(i[2])))
+				self.tablaH.setItem(rown,3,QTableWidgetItem(str(i[3])))
+				self.tablaH.setItem(rown,4,QTableWidgetItem(str(i[4])))
+				rown+=1
+				self.horario.addItem(i[0])
+			self.elementos=True
+		if self.ide.text()!='':
+			info=self.db.getDatosTec(self.persona.getId())
+			if len(info)!=0:
+				self.grado.setCurrentIndex(self.grado.findText(info[2]))
+				self.altura.setValue(info[3])
+				self.peso.setValue(info[4])
+				self.phone.setText(unicode(info[5]))
+				self.home.setText(info[6])
+				self.sangre.setCurrentIndex(self.sangre.findText(info[7]))
+				self.alergia.setText(info[8])
+			info=self.db.getDatoMes(self.persona.getId())
+			if len(info)!=0:
+				fecha=info[1].split('-')
+				self.mesIni.setDate(QDate(int(fecha[0]),int(fecha[1]),int(fecha[2])))
+				self.gradoIni.setCurrentIndex(self.gradoIni.findText(info[2]))
+				self.clubAn.setText(info[3])
+				self.tipoEs.setCurrentIndex(self.tipoEs.findText(info[4]))
+				self.horario.setCurrentIndex(self.horario.findText(info[5]))
+			self.tutor.viewTutor(self.persona.getId())

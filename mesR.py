@@ -16,10 +16,10 @@ class mesR(QWidget):
 		self.msg=Mensage.Msg(self.dir)
 		with open('%s/css/stylesAsis.css'%self.dir) as f:
 			self.setStyleSheet(f.read())
-		self.texto()
-		self.linText()
-		self.botones()
-		self.position()
+		#self.texto()
+		#self.linText()
+		#self.botones()
+		#self.position()
 	def texto(self):
 		self.ide=QLabel("%s"%self.persona.getId(),self)
 	def botones(self):

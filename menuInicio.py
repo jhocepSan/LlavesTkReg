@@ -8,7 +8,7 @@ class Example(QMainWindow):
 	def __init__(self):
 		super(Example, self).__init__()
 		self.dir="."#"F:/LlavesTkReg"
-		self.setGeometry(10, 50, 1800, 750)
+		self.setGeometry(10, 50, 1200, 690)
 		self.setWindowTitle('Sequimiento Club')
 		self.statusBar().showMessage("Mucho Gusto")
 		self.setWindowIcon(QIcon('%s/Imagenes/Logo.png'%self.dir))
