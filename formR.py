@@ -129,6 +129,7 @@ class formR(QWidget):
 	def clear(self):
 		self.dirQr=""
 		self.dirBr=""
+		self.dirFoto=""
 		self.id.setText('')
 		self.nombre.clear()
 		self.apellido.clear()
