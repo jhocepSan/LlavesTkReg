@@ -44,7 +44,7 @@ class formR(QWidget):
 		self.fotoEl=QLabel(self)
 		self.fotoEl.setStatusTip("Foto del Estudiante")
 		self.fotoEl.setObjectName("img")
-		self.fotoEl.setPixmap(QPixmap.fromImage(QImage('%s/Imagenes/psn.png'%self.dir)).scaled(400,300,Qt.KeepAspectRatio))
+		self.fotoEl.setPixmap(QPixmap.fromImage(QImage('%s/Imagenes/psn.png'%self.dir)).scaled(200,200,Qt.KeepAspectRatio))
 		self.fotoEl.setAlignment(Qt.AlignCenter);
 		self.title=QLabel("Codigo QR",self)
 		self.id=QLabel("",self)
@@ -137,7 +137,7 @@ class formR(QWidget):
 		self.fechaN.clear()
 		self.lugar.clear()
 		self.edad.clear()
-		self.fotoEl.setPixmap(QPixmap.fromImage(QImage('%s/Imagenes/psn.png'%self.dir)).scaled(400,300,Qt.KeepAspectRatio))
+		self.fotoEl.setPixmap(QPixmap.fromImage(QImage('%s/Imagenes/psn.png'%self.dir)).scaled(200,200,Qt.KeepAspectRatio))
 		self.qr.setPixmap(QPixmap.fromImage(QImage('%s/Imagenes/qr.png'%self.dir)).scaled(250,200,Qt.KeepAspectRatio))
 		self.br.setPixmap(QPixmap.fromImage(QImage('%s/Imagenes/br.png'%self.dir)).scaled(200,100,Qt.KeepAspectRatio))
 	def genero(self,gen):
@@ -167,15 +167,15 @@ class formR(QWidget):
 	def generarQr(self):
 		codigo=prRc4.codigo(str(self.verf.calcsum(str(self.verf.calcsum(self.ci.text()))))*5,self.nombre.text()+self.fechaN.text())
 		self.id.setText(codigo)
-		img=qrcode.make(codigo)
-		self.dirBr="%s/Imagenes/Br/%s.png"%(self.dir,codigo)
-		self.dirQr="%s/Imagenes/Qr/%s.png"%(self.dir,codigo)
-		f = open(self.dirQr, "wb")
-		img.save(f)
-		f.close()
-		self.crear_code39(codigo,self.dirBr)
-		self.br.setPixmap(QPixmap.fromImage(QImage(self.dirBr)).scaled(200,100,Qt.KeepAspectRatio))
-		self.qr.setPixmap(QPixmap.fromImage(QImage(self.dirQr)).scaled(250,200,Qt.KeepAspectRatio))
+		#img=qrcode.make(codigo)
+		#self.dirBr="%s/Imagenes/Br/%s.png"%(self.dir,codigo)
+		#self.dirQr="%s/Imagenes/Qr/%s.png"%(self.dir,codigo)
+		#f = open(self.dirQr, "wb")
+		#img.save(f)
+		#f.close()
+		#self.crear_code39(codigo,self.dirBr)
+		#self.br.setPixmap(QPixmap.fromImage(QImage(self.dirBr)).scaled(200,100,Qt.KeepAspectRatio))
+		#self.qr.setPixmap(QPixmap.fromImage(QImage(self.dirQr)).scaled(250,200,Qt.KeepAspectRatio))
 	def crear_code39(self,valor, archivo):
 		code39 = barcode.Code39(valor, writer=barcode.writer.ImageWriter())
 		filename = code39.save(archivo)
@@ -190,7 +190,7 @@ class formR(QWidget):
 				QMessageBox.information(self, "Seleccione Una Imagen","error %s." % fileName)
 				return
 			else:
-				img=QPixmap.fromImage(image).scaled(400, 300,Qt.KeepAspectRatio)
+				img=QPixmap.fromImage(image).scaled(200, 200,Qt.KeepAspectRatio)
 				self.fotoEl.setPixmap(img)
 				self.fotoEl.setAlignment(Qt.AlignCenter)
 				extencion=fileName[fileName.find('.'):]

@@ -28,6 +28,7 @@ class Conector(object):
 		cur.execute('CREATE TABLE IF NOT EXISTS Horario(Grupo TEXT,Instructor TEXT,HoraIni TEXT,HoraFin Text,Dias TEXT)')
 		cur.execute('CREATE TABLE IF NOT EXISTS Grados(Cinturon Text,Sigla TEXT,Denominacion TEXT)')
 		cur.execute('CREATE TABLE IF NOT EXISTS %sAsistencia(ID TEXT,Fecha DATETIME,Dia TEXT,Control TEXT)'%self.mes)
+		cur.execute('CREATE TABLE IF NOT EXISTS Pagos(ID TEXT,Mes TEXT, Fecha DATE,Responsable TEXT,Monto NUMERIC)')
 		self.db.commit()
 		cur.close()
 	def setClub(self,dato):
@@ -106,7 +107,7 @@ class Conector(object):
 		cur.close()
 		self.db.commit()
 		return row[0]
-	def getEstudiante(self,ide):
+	def getEstudiant(self,ide):
 		cur=self.db.cursor()
 		cur.execute("SELECT * FROM Mujer WHERE ID=:n",{"n":str(ide)})
 		row=cur.fetchall()
@@ -227,3 +228,18 @@ class Conector(object):
 		cur.execute('INSERT INTO %sAsistencia VALUES(?,?,?,?)'%self.mes,dato)
 		self.db.commit()
 		cur.close()
+	def setPago(self,datos):
+		cur=self.db.cursor()
+		cur.execute("INSERT INTO Pagos VALUES(?,?,?,?,?)",datos)
+		self.db.commit()
+		cur.close()
+	def pagoMes(self,datos):
+		cur=self.db.cursor()
+		cur.execute('SELECT * FROM Pagos WHERE ID=:n AND Mes=:m',{'n':str(datos[0]),'m':str(datos[1])})
+		row=cur.fetchall()
+		self.db.commit()
+		cur.close()
+		if len(row)>0:
+			return True
+		else:
+			return False

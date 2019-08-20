@@ -3,7 +3,7 @@
 from PySide.QtGui import *
 from PySide.QtCore import *
 import sys,os,formR,tecR,mesR,Persona
-import time,conector,optionTabla,buscar
+import time,conector,optionTabla,buscar,Mensage
 
 class RegistraAsis(QMdiSubWindow):
 	"""Vista para Registro de Estudiante"""
@@ -15,6 +15,7 @@ class RegistraAsis(QMdiSubWindow):
 		'June':'Junio','July':'Julio','August':'Agosto','September':'Septiembre',
 		'October':'Octubre','November':'Noviembre','December':'Diciembre'}
 		self.dir=dire
+		self.msg=Mensage.Msg(self.dir)
 		self.db=conector.Conector(self.dir)
 		self.option=optionTabla.OptionTabla(self.dir)
 		self.timer=QTimer(self)
@@ -34,7 +35,7 @@ class RegistraAsis(QMdiSubWindow):
 		self.fecha=QLabel("Fecha - Dia: %s"%time.strftime("%d / %m / %Y"),self)
 		self.fotoEl=QLabel("",self)
 		self.fotoEl.setObjectName("img")
-		self.fotoEl.setPixmap(QPixmap.fromImage(QImage('%s/Imagenes/psn.png'%self.dir)).scaled(300,300,Qt.KeepAspectRatio))
+		self.fotoEl.setPixmap(QPixmap.fromImage(QImage('%s/Imagenes/psn.png'%self.dir)).scaled(200,200,Qt.KeepAspectRatio))
 		self.fotoEl.setAlignment(Qt.AlignCenter);
 		self.tabla=QTableWidget(self)
 		self.tabla.setRowCount(100)
@@ -57,6 +58,7 @@ class RegistraAsis(QMdiSubWindow):
 		self.botonClear.setIconSize(QSize(30,30))
 		self.botonSalir=QPushButton(QIcon('%s/Imagenes/salir.png'%self.dir),"Salir",self)
 		self.botonSalir.setIconSize(QSize(30,30))
+		self.botonSalir.clicked.connect(self.salir)
 	def activado(self):
 		self.fila=self.tabla.currentRow()
 		self.timer.start(1000)
@@ -64,6 +66,7 @@ class RegistraAsis(QMdiSubWindow):
 	def runOption(self):
 		if self.option.salio():
 			self.tabla.setItem(self.fila , 3,QTableWidgetItem(str(self.option.getTipo())))
+			self.tabla.setItem(self.fila , 4,QTableWidgetItem(time.strftime("%Y-%m-%d %H:%M:%S")))
 			self.timer.stop()
 	def grupoLoad(self):
 		self.horas=self.db.getHorario()
@@ -71,7 +74,7 @@ class RegistraAsis(QMdiSubWindow):
 			self.grupo.addItem(str(i[0]))
 	def cargaDato(self):
 		self.tabla.clear()
-		self.tabla.setHorizontalHeaderLabels(["ID","Nombre","Apellido","Presente?"])
+		self.tabla.setHorizontalHeaderLabels(["ID","Nombre","Apellido","Presente?","Fecha"])
 		self.tabla.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
 		info=self.db.getDatoMesH(self.grupo.currentText())
 		cont=0
@@ -79,7 +82,7 @@ class RegistraAsis(QMdiSubWindow):
 			self.llenarTabla(cont,i[0])
 			cont+=1
 	def llenarTabla(self,cont,ide):
-		man=self.db.getEstudiante(ide)[0]
+		man=self.db.getEstudiant(ide)[0]
 		self.tabla.setItem(cont , 0,QTableWidgetItem(str(man[0])))
 		self.tabla.setItem(cont , 1,QTableWidgetItem(str(man[1])))
 		self.tabla.setItem(cont , 2,QTableWidgetItem(str(man[2])))
@@ -129,3 +132,6 @@ class RegistraAsis(QMdiSubWindow):
 					self.diccionario[dia],self.tabla.item(fila,3).text()]
 				self.db.setAsistencia(dato)
 				fila+=1
+		self.msg.mensageBueno("<h1>Guardado la informacion de Asistencia</h1>")
+	def salir(self):
+		self.close()

@@ -8,7 +8,7 @@ class MenuPago(QMdiSubWindow):
 	"""Vista para el registro de mensualidad del club"""
 	def __init__(self, arg,dire):
 		super(MenuPago, self).__init__(arg)
-		self.setGeometry(0,0,885,630)
+		self.setGeometry(0,0,1050,670)
 		self.setWindowTitle("Registrar Mensualidad")
 		self.dir=dire
 		with open('%s/css/styleMen.css'%self.dir) as f:

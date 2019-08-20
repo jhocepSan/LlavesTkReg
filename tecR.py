@@ -2,16 +2,17 @@
 #-*- coding: utf-8 -*-
 from PySide.QtGui import *
 from PySide.QtCore import *
-import Mensage,conector,tutores
+import Mensage,conector,tutores,pagoMes
 class tecR(QWidget):
 	"""docstring for formR"""
-	def __init__(self,parent,dire,ide):
+	def __init__(self,parent,dire,ide,mdi):
 		super(tecR, self).__init__(parent)
 		self.elementos=False
 		self.persona=ide
 		self.dir=dire
 		self.db=conector.Conector(self.dir)
 		self.msg=Mensage.Msg(self.dir)
+		self.mdi=mdi
 		with open('%s/css/stylesAsis.css'%self.dir) as f:
 			self.setStyleSheet(f.read())
 		self.texto()
@@ -36,7 +37,7 @@ class tecR(QWidget):
 		self.fotoC=QLabel(self)
 		self.fotoC.setObjectName("img")
 		self.fotoC.setAlignment(Qt.AlignCenter);
-		self.fotoC.setPixmap(QPixmap.fromImage(QImage('%s/Imagenes/clb.png'%self.dir)).scaled(400,300,Qt.KeepAspectRatio))
+		self.fotoC.setPixmap(QPixmap.fromImage(QImage('%s/Imagenes/clb.png'%self.dir)).scaled(200,200,Qt.KeepAspectRatio))
 		self.tablaH=QTableWidget(self)
 		self.tablaH.setRowCount(20)
 		self.tablaH.setColumnCount(5)
@@ -54,8 +55,15 @@ class tecR(QWidget):
 		self.peso.setSuffix(" [Kgr]")
 		self.peso.setSingleStep(0.01)
 		self.phone=QLineEdit(self)
+		self.mesIni=QDateEdit(self)
+		self.tipoEs=QComboBox(self)
+		self.tipoEs.addItem("Normal")
+		self.tipoEs.addItem("Media Beca")
+		self.tipoEs.addItem("Becado")
 		self.home=QLineEdit(self)
 		self.home.editingFinished.connect(lambda:self.formalizar(self.home))
+		self.alergia=QLineEdit(self)
+		self.alergia.editingFinished.connect(lambda:self.formalizar(self.alergia))
 		self.sangre=QComboBox(self)
 		self.sangre.setIconSize(QSize(30,30))
 		self.sangre.addItem("O+")
@@ -66,16 +74,10 @@ class tecR(QWidget):
 		self.sangre.addItem("B-")
 		self.sangre.addItem("AB+")
 		self.sangre.addItem("AB-")
-		self.alergia=QLineEdit(self)
-		self.mesIni=QDateEdit(self)
+		self.horario=QComboBox(self)
 		self.gradoIni=QComboBox(self)
 		self.clubAn=QLineEdit(self)
 		self.clubAn.editingFinished.connect(lambda:self.formalizar(self.clubAn))
-		self.tipoEs=QComboBox(self)
-		self.tipoEs.addItem("Normal")
-		self.tipoEs.addItem("Media Beca")
-		self.tipoEs.addItem("Becado")
-		self.horario=QComboBox(self)
 		self.tutor=tutores.tutorReg(self,self.dir,self.persona)
 	def formalizar(self,elem):
 		elem.setText(elem.text().title())
@@ -83,16 +85,18 @@ class tecR(QWidget):
 		self.limpiar=QPushButton(QIcon('%s/Imagenes/limpiar.png'%self.dir),"Limpiar",self)
 		self.limpiar.setIconSize(QSize(40,40))
 		self.limpiar.clicked.connect(self.clear)
+		self.limpiar.setStatusTip("Limpiar Informacion del formulario")
 		self.guardar=QPushButton(QIcon('%s/Imagenes/save.png'%self.dir),"Guardar",self)
 		self.guardar.setIconSize(QSize(40,40))
 		self.guardar.clicked.connect(self.save)
+		self.guardar.setStatusTip("Guardar Informacion")
 		self.irPago=QPushButton(QIcon('%s/Imagenes/pago.png'%self.dir),'',self)
 		self.irPago.setIconSize(QSize(80,80))
 		self.irPago.setObjectName("redondo")
-		self.irPago.setStatusTip("Ir a pago Mensualidad")
-		#self.irPago.clicked.connect(self.iraPago)
+		self.irPago.setStatusTip("Ir a pago Mensualidad para el Estudiante")
+		self.irPago.clicked.connect(self.iraPago)
 	def position(self):
-		self.tutor.setGeometry(560,200,400,140)
+		self.tutor.setGeometry(560,200,400,180)
 		self.ide.setGeometry(300,30,200,40)
 		self.clubl.setGeometry(50,80,100,40)
 		self.gradoL.setGeometry(50,130,100,40)
@@ -138,6 +142,12 @@ class tecR(QWidget):
 			self.msg.mensageBueno("<h1>Datos Guardados Correctamente</h1>")
 		except:
 			self.msg.mensageMalo("<h1>Error Al Guardar</h1>")
+	def iraPago(self):
+		if self.ide.text()!='':
+			payMes=pagoMes.MenuPago(self,self.dir)
+			self.mdi.addSubWindow(payMes)
+			payMes.show()
+			payMes.actualizar(self.persona.getId())
 	def clear(self):
 		self.peso.clear()
 		self.altura.clear()
