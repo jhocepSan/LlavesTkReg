@@ -5,7 +5,7 @@ from PySide.QtCore import *
 import sys,os,formR,tecR,mesR,Persona
 import time,conector,optionTabla,buscar,Mensage
 
-class RegistraAsis(QMdiSubWindow):
+class RegistraAsis(QWidget):
 	"""Vista para Registro de Estudiante"""
 	def __init__(self,arg,dire):
 		super(RegistraAsis, self).__init__(arg)
@@ -20,10 +20,8 @@ class RegistraAsis(QMdiSubWindow):
 		self.option=optionTabla.OptionTabla(self.dir)
 		self.timer=QTimer(self)
 		self.timer.timeout.connect(self.runOption)
-		self.reloj=QTimer(self)
-		self.reloj.timeout.connect(self.actualiza)
-		self.reloj.start(1000)
 		self.buscare=buscar.buscarEst(self,self.dir)
+		self.buscare.mostrar.clicked.connect(self.actualiza)
 		self.setGeometry(0,0,1050,670)
 		self.setWindowTitle("Control de Asistencia")
 		self.myLabel()
@@ -32,11 +30,7 @@ class RegistraAsis(QMdiSubWindow):
 			self.setStyleSheet(f.read())
 		self.position()
 	def myLabel(self):
-		self.fecha=QLabel("Fecha - Dia: %s"%time.strftime("%d / %m / %Y"),self)
-		self.fotoEl=QLabel("",self)
-		self.fotoEl.setObjectName("img")
-		self.fotoEl.setPixmap(QPixmap.fromImage(QImage('%s/Imagenes/psn.png'%self.dir)).scaled(200,200,Qt.KeepAspectRatio))
-		self.fotoEl.setAlignment(Qt.AlignCenter);
+		self.fecha=QLabel("Fecha - Dia: %s"%time.strftime("%d / %m / %Y"),self);
 		self.tabla=QTableWidget(self)
 		self.tabla.setRowCount(100)
 		self.tabla.setColumnCount(5)
@@ -51,14 +45,13 @@ class RegistraAsis(QMdiSubWindow):
 		self.grupo.setIconSize(QSize(30,30))
 		self.grupoLoad()
 		self.grupo.activated.connect(self.cargaDato)
+		self.porsentage=QPushButton(QIcon('%s/Imagenes/porsentage.png'%self.dir),"Porsentaje de Asistencia",self)
+		self.porsentage.setIconSize(QSize(30,30))
 		self.botonSave=QPushButton(QIcon('%s/Imagenes/save.png'%self.dir),"Guardar",self)
 		self.botonSave.setIconSize(QSize(30,30))
 		self.botonSave.clicked.connect(self.guardar)
 		self.botonClear=QPushButton(QIcon('%s/Imagenes/limpiar.png'%self.dir),"Limpiar",self)
 		self.botonClear.setIconSize(QSize(30,30))
-		self.botonSalir=QPushButton(QIcon('%s/Imagenes/salir.png'%self.dir),"Salir",self)
-		self.botonSalir.setIconSize(QSize(30,30))
-		self.botonSalir.clicked.connect(self.salir)
 	def activado(self):
 		self.fila=self.tabla.currentRow()
 		self.timer.start(1000)
@@ -76,6 +69,7 @@ class RegistraAsis(QMdiSubWindow):
 		self.tabla.clear()
 		self.tabla.setHorizontalHeaderLabels(["ID","Nombre","Apellido","Presente?","Fecha"])
 		self.tabla.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
+		print self.grupo.currentText()
 		info=self.db.getDatoMesH(self.grupo.currentText())
 		cont=0
 		for i in info:
@@ -106,15 +100,13 @@ class RegistraAsis(QMdiSubWindow):
 				fila+=1
 			self.buscare.cleanPersona()
 	def position(self):
-		self.fecha.setGeometry(40,50,300,40)
-		self.fotoEl.setGeometry(40,100,200,200)
-		self.validar.setGeometry(260,100,100,100)
-		self.grupo.setGeometry(260,220,150,40)
-		self.tabla.setGeometry(440,50,550,500)
-		self.buscare.setGeometry(40,350,270,130)
-		self.botonSave.setGeometry(390,570,100,40)
-		self.botonClear.setGeometry(510,570,100,40)
-		self.botonSalir.setGeometry(735,570,100,40)
+		self.fecha.setGeometry(10,10,300,40)
+		self.validar.setGeometry(330,10,100,100)
+		self.grupo.setGeometry(10,70,120,40)
+		self.tabla.setGeometry(10,210,1000,400)
+		self.buscare.setGeometry(450,10,340,180)
+		self.botonSave.setGeometry(810,10,120,40)
+		self.botonClear.setGeometry(810,70,120,40)
 	def guardar(self):
 		dia=time.strftime("%A")
 		fila=0
@@ -133,5 +125,3 @@ class RegistraAsis(QMdiSubWindow):
 				self.db.setAsistencia(dato)
 				fila+=1
 		self.msg.mensageBueno("<h1>Guardado la informacion de Asistencia</h1>")
-	def salir(self):
-		self.close()

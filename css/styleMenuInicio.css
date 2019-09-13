@@ -1,0 +1,19 @@
+QMainWindow{
+    background:rgb(202, 216, 252)
+}
+QTabWidget::pane {
+    border: 2px solid rgba(248, 210, 104, 0.5);
+    background: #DCE4F9;
+}
+QTabBar::tab:selected {
+    border-color: #9B9B9B;
+    border-bottom-color: rgb(171, 212, 245); 
+}
+QTabWidget::tab-bar:top {
+    top: 2px;
+}
+
+QTabWidget::tab-bar:bottom {
+    bottom: 3px;
+    background: rgb(135, 169, 255);
+}

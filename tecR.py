@@ -5,15 +5,14 @@ from PySide.QtCore import *
 import Mensage,conector,tutores,pagoMes
 class tecR(QWidget):
 	"""docstring for formR"""
-	def __init__(self,parent,dire,ide,mdi):
+	def __init__(self,parent,dire,ide):
 		super(tecR, self).__init__(parent)
 		self.elementos=False
 		self.persona=ide
 		self.dir=dire
 		self.db=conector.Conector(self.dir)
 		self.msg=Mensage.Msg(self.dir)
-		self.mdi=mdi
-		with open('%s/css/stylesAsis.css'%self.dir) as f:
+		with open('%s/css/stylesMenu.css'%self.dir) as f:
 			self.setStyleSheet(f.read())
 		self.texto()
 		self.line()
@@ -38,11 +37,6 @@ class tecR(QWidget):
 		self.fotoC.setObjectName("img")
 		self.fotoC.setAlignment(Qt.AlignCenter);
 		self.fotoC.setPixmap(QPixmap.fromImage(QImage('%s/Imagenes/clb.png'%self.dir)).scaled(200,200,Qt.KeepAspectRatio))
-		self.tablaH=QTableWidget(self)
-		self.tablaH.setRowCount(20)
-		self.tablaH.setColumnCount(5)
-		self.tablaH.setHorizontalHeaderLabels(["Grupo","Instructor","Inicio","Fin","Dias"])
-		self.tablaH.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
 	def line(self):
 		self.club=QComboBox(self)
 		self.club.setIconSize(QSize(30,30))
@@ -51,15 +45,16 @@ class tecR(QWidget):
 		self.altura=QDoubleSpinBox(self)
 		self.altura.setSuffix("  [m]")
 		self.altura.setSingleStep(0.01)
+		self.altura.setMaximum(5)
+		self.altura.setMinimum(0)
 		self.peso=QDoubleSpinBox(self)
 		self.peso.setSuffix(" [Kgr]")
 		self.peso.setSingleStep(0.01)
+		self.peso.setMaximum(200)
+		self.peso.setMinimum(0)
 		self.phone=QLineEdit(self)
 		self.mesIni=QDateEdit(self)
 		self.tipoEs=QComboBox(self)
-		self.tipoEs.addItem("Normal")
-		self.tipoEs.addItem("Media Beca")
-		self.tipoEs.addItem("Becado")
 		self.home=QLineEdit(self)
 		self.home.editingFinished.connect(lambda:self.formalizar(self.home))
 		self.alergia=QLineEdit(self)
@@ -94,41 +89,39 @@ class tecR(QWidget):
 		self.irPago.setIconSize(QSize(80,80))
 		self.irPago.setObjectName("redondo")
 		self.irPago.setStatusTip("Ir a pago Mensualidad para el Estudiante")
-		self.irPago.clicked.connect(self.iraPago)
 	def position(self):
-		self.tutor.setGeometry(560,200,400,180)
-		self.ide.setGeometry(300,30,200,40)
-		self.clubl.setGeometry(50,80,100,40)
-		self.gradoL.setGeometry(50,130,100,40)
-		self.alturaL.setGeometry(50,180,100,40)
-		self.pesol.setGeometry(50,230,100,40)
-		self.phoneL.setGeometry(50,280,100,40)
-		self.mesInil.setGeometry(50,330,100,40)
-		self.tipoEsl.setGeometry(50,380,100,40)
-		self.homeL.setGeometry(50,430,100,40)
-		self.home.setGeometry(160,430,300,40)
-		self.alergial.setGeometry(50,490,100,40)
-		self.alergia.setGeometry(160,490,300,40)
-		self.fotoC.setGeometry(340,80,200,200)
-		self.gradoInil.setGeometry(560,80,100,40)
-		self.gradoIni.setGeometry(680,80,150,40)
-		self.clubAnl.setGeometry(560,140,100,40)
-		self.clubAn.setGeometry(680,140,150,40)
-		self.irPago.setGeometry(840,80,100,100)
-		self.sangrel.setGeometry(340,300,100,40)
-		self.sangre.setGeometry(450,300,90,30)
-		self.horariol.setGeometry(340,360,100,40)
-		self.horario.setGeometry(460,360,100,40)
-		self.club.setGeometry(160,80,150,40)
-		self.grado.setGeometry(160,130,150,40)
-		self.altura.setGeometry(160,180,150,40)
-		self.peso.setGeometry(160,230,150,40)
-		self.phone.setGeometry(160,280,150,40)
-		self.mesIni.setGeometry(160,330,150,40)
-		self.tipoEs.setGeometry(160,380,150,40)
-		self.tablaH.setGeometry(480,430,500,150)
-		self.guardar.setGeometry(50,550,100,40)
-		self.limpiar.setGeometry(300,550,100,40)
+		self.tutor.setGeometry(560,180,400,180)
+		self.ide.setGeometry(300,10,200,40)
+		self.clubl.setGeometry(50,60,100,40)
+		self.gradoL.setGeometry(50,110,100,40)
+		self.alturaL.setGeometry(50,160,100,40)
+		self.pesol.setGeometry(50,210,100,40)
+		self.phoneL.setGeometry(50,260,100,40)
+		self.mesInil.setGeometry(50,310,100,40)
+		self.tipoEsl.setGeometry(50,360,100,40)
+		self.homeL.setGeometry(50,410,100,40)
+		self.home.setGeometry(160,410,300,40)
+		self.alergial.setGeometry(50,470,100,40)
+		self.alergia.setGeometry(160,470,300,40)
+		self.fotoC.setGeometry(340,60,200,200)
+		self.gradoInil.setGeometry(560,60,100,40)
+		self.gradoIni.setGeometry(680,60,150,40)
+		self.clubAnl.setGeometry(560,120,100,40)
+		self.clubAn.setGeometry(680,120,150,40)
+		self.irPago.setGeometry(840,60,100,100)
+		self.sangrel.setGeometry(340,280,100,40)
+		self.sangre.setGeometry(450,280,90,30)
+		self.horariol.setGeometry(340,340,100,40)
+		self.horario.setGeometry(450,340,100,40)
+		self.club.setGeometry(160,60,150,40)
+		self.grado.setGeometry(160,110,150,40)
+		self.altura.setGeometry(160,160,150,40)
+		self.peso.setGeometry(160,210,150,40)
+		self.phone.setGeometry(160,260,150,40)
+		self.mesIni.setGeometry(160,310,150,40)
+		self.tipoEs.setGeometry(160,360,150,40)
+		self.guardar.setGeometry(500,470,130,40)
+		self.limpiar.setGeometry(650,470,130,40)
 	def save(self):
 		try:
 			datos=[self.ide.text(),unicode(self.club.currentText()),self.grado.currentText(),
@@ -142,38 +135,35 @@ class tecR(QWidget):
 			self.msg.mensageBueno("<h1>Datos Guardados Correctamente</h1>")
 		except:
 			self.msg.mensageMalo("<h1>Error Al Guardar</h1>")
-	def iraPago(self):
-		if self.ide.text()!='':
-			payMes=pagoMes.MenuPago(self,self.dir)
-			self.mdi.addSubWindow(payMes)
-			payMes.show()
-			payMes.actualizar(self.persona.getId())
 	def clear(self):
+		self.ide.setText('')
 		self.peso.clear()
 		self.altura.clear()
 		self.home.clear()
 		self.phone.clear()
-		self.tutor.clear()
-		self.phonet.clear()
+		#self.tutor.clear()
 		self.alergia.clear()
+		self.persona.setId('')
 	def actualizar(self):
 		self.ide.setText(self.persona.getId())
 		if not self.elementos:
 			datos=self.db.getClub()
-			self.club.addItem(QIcon(datos[2]),datos[0])
-			self.fotoC.setPixmap(QPixmap.fromImage(QImage(datos[2])).scaled(400,300,Qt.KeepAspectRatio))
+			for i in datos:
+				if self.club.findText(i[0])<0:
+					self.club.addItem(QIcon(i[5]),i[0])
 			grado=self.db.getGrado()
 			for i in grado:
-				self.grado.addItem(i[0])
-				self.gradoIni.addItem(i[0])
+				if self.grado.findText(i[0])<0:
+					self.grado.addItem(i[0])
+				if self.gradoIni.findText(i[0])<0:
+					self.gradoIni.addItem(i[0])
+			modalidad=self.db.getModalidad()
+			for i in modalidad:
+				if self.tipoEs.findText(i[0])<0:
+					self.tipoEs.addItem(i[0])
 			datos=self.db.getHorario()
 			rown=0
 			for i in datos:
-				self.tablaH.setItem(rown,0,QTableWidgetItem(str(i[0])))
-				self.tablaH.setItem(rown,1,QTableWidgetItem(str(i[1])))
-				self.tablaH.setItem(rown,2,QTableWidgetItem(str(i[2])))
-				self.tablaH.setItem(rown,3,QTableWidgetItem(str(i[3])))
-				self.tablaH.setItem(rown,4,QTableWidgetItem(str(i[4])))
 				rown+=1
 				self.horario.addItem(i[0])
 			self.elementos=True

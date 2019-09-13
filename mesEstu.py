@@ -12,9 +12,7 @@ class mesEstu(QWidget):
 		self.msg=Mensage.Msg(self.dir)
 		self.db=conector.Conector(self.dir)
 		self.buscare=buscar.buscarEst(self,self.dir)
-		self.buscare.clicked.connect(self.activarTimer)
-		self.timer=QTimer(self)
-		self.timer.timeout.connect(self.colocarEst)
+		self.buscare.mostrar.clicked.connect(self.colocarEst)
 		with open('%s/css/stylesAsis.css'%self.dir) as f:
 			self.setStyleSheet(f.read())
 		self.texto()
@@ -22,18 +20,14 @@ class mesEstu(QWidget):
 		self.botones()
 		self.position()
 	def texto(self):
-		self.nombrel=QLabel("<h2>Nombre: </h2>",self)
+		self.nombrel=QLabel("Nombre: ",self)
 		self.nombre=QLabel('',self)
-		self.apellidol=QLabel("<h2>Apellidos: </h2>",self)
+		self.apellidol=QLabel("Apellidos: ",self)
 		self.apellido=QLabel('',self)
-		self.mesPayl=QLabel("<h2>Mes a Pagar: </h2>",self)
-		self.montoL=QLabel("<h2>Pago: </h2>",self)
-		self.nomPagol=QLabel("<h2>Nombre: </h2>",self)
-		self.fechal=QLabel("<h2>Fecha: </h2>",self)
-		self.fotoEl=QLabel(self)
-		self.fotoEl.setObjectName("img")
-		self.fotoEl.setPixmap(QPixmap.fromImage(QImage('%s/Imagenes/psn.png'%self.dir)).scaled(200,200,Qt.KeepAspectRatio))
-		self.fotoEl.setAlignment(Qt.AlignCenter);
+		self.mesPayl=QLabel("Mes a Pagar: ",self)
+		self.montoL=QLabel("Mensualidad: ",self)
+		self.nomPagol=QLabel("Responsable: ",self)
+		self.fechal=QLabel("Fecha: ",self)
 		self.ide=QLabel('',self)
 	def myLine(self):
 		self.mesPay=QComboBox(self)
@@ -70,21 +64,18 @@ class mesEstu(QWidget):
 		self.qrEscaner=QPushButton(QIcon('%s/Imagenes/escaner.png'%self.dir),"",self)
 		self.qrEscaner.setIconSize(QSize(70,70))
 		self.qrEscaner.setObjectName("redondo")
-		self.limpiar=QPushButton(QIcon('%s/Imagenes/borrar.png'%self.dir),"Limpiar",self)
+		self.limpiar=QPushButton(QIcon('%s/Imagenes/limpiar.png'%self.dir),"Limpiar",self)
 		self.limpiar.setIconSize(QSize(30,30))
 		self.limpiar.clicked.connect(self.clear)
-		self.guardar=QPushButton(QIcon('%s/Imagenes/paymon.png'%self.dir),'',self)
-		self.guardar.setObjectName("redondo")
+		self.guardar=QPushButton(QIcon('%s/Imagenes/paymon.png'%self.dir),'Guardar',self)
 		self.guardar.clicked.connect(self.save)
-		self.guardar.setIconSize(QSize(100,100))
+		self.guardar.setIconSize(QSize(30,30))
 		self.botonSalir=QPushButton(QIcon('%s/Imagenes/print.png'%self.dir),"",self)
 		self.botonSalir.setIconSize(QSize(70,70))
 		self.botonSalir.setObjectName("redondo")
-		self.botonSalir.clicked.connect(self.salir)
 	def position(self):
-		self.fotoEl.setGeometry(30,30,200,200)
 		self.qrEscaner.setGeometry(250,30,100,100)
-		self.buscare.setGeometry(30,250,230,120)
+		self.buscare.setGeometry(30,150,320,180)
 		self.deudor.setGeometry(30,390,300,150)
 		self.nombrel.setGeometry(390,50,150,40)
 		self.nombre.setGeometry(560,50,200,40)
@@ -98,12 +89,16 @@ class mesEstu(QWidget):
 		self.nomPago.setGeometry(560,260,200,40)
 		self.fechal.setGeometry(390,310,150,40)
 		self.fecha.setGeometry(560,310,200,40)
-		self.guardar.setGeometry(780,250,100,100)
+		self.guardar.setGeometry(780,250,120,40)
 		self.ide.setGeometry(390,370,150,40)
 		self.limpiar.setGeometry(390,500,100,40)
 		self.botonSalir.setGeometry(735,450,100,100)
 	def clear(self):
-		self.fotoEl.setPixmap(QPixmap.fromImage(QImage('%s/Imagenes/psn.png'%self.dir)).scaled(200,200,Qt.KeepAspectRatio))
+		self.ide.setText('')
+		self.nombre.setText('')
+		self.apellido.setText('')
+		self.monto.value(0)
+		self.buscare.limpiarBusqueda()
 	def save(self):
 		if self.nomPago.text()!=''and self.monto.value()!=0 and self.ide.text()!='':
 			datos=[self.ide.text(),self.mesPay.currentText(),self.monto.value(),
@@ -115,10 +110,10 @@ class mesEstu(QWidget):
 				self.msg.mensageMalo("<h1>El Estudiante ya pago del mes seleccionado</h1>")
 		else:
 			self.msg.mensageMalo("<h1>Complete la informacion Faltante</h1>")
-	def salir(self):
-		self.close()
 	def actualizar(self,ide):
+		self.ide.setText(ide)
 		dato=self.db.getEstudiante('Varon',ide)
+		self.loadMensualidad(ide)
 		if len(dato) is not None:
 			self.nombre.setText(dato[1])
 			self.apellido.setText(dato[2])
@@ -133,7 +128,9 @@ class mesEstu(QWidget):
 			self.ide.setText(persona[0])
 			self.nombre.setText(persona[1])
 			self.apellido.setText(persona[2])
+			self.loadMensualidad(persona[0])
 			self.buscare.cleanPersona()
-			self.timer.stop()
-	def activarTimer(self):
-		self.timer.start(1000)
+	def loadMensualidad(self,ide):
+		mes=self.db.getDatoMes(ide)
+		costo=self.db.getModalidadId(mes[4])
+		self.monto.setValue(int(costo[0][1]))

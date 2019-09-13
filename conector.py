@@ -18,27 +18,76 @@ class Conector(object):
 		self.createTable()
 	def createTable(self):
 		cur=self.db.cursor()
-		cur.execute("CREATE TABLE IF NOT EXISTS Varon(ID TEXT,Nombre TEXT,Apellido TEXT,CI NUMERIC,Fecha DATE,Lugar TEXT,Edad INT)")
-		cur.execute('CREATE TABLE IF NOT EXISTS Mujer(ID TEXT,Nombre TEXT,Apellido TEXT,CI NUMERIC,Fecha DATE,Lugar TEXT,Edad INT)')
+		cur.execute("CREATE TABLE IF NOT EXISTS Varon(ID TEXT,Nombre TEXT,Apellido TEXT,CI NUMERIC,Expedido TEXT,Fecha DATE,Lugar TEXT,Edad INT,Compromiso BOOLEAN)")
+		cur.execute('CREATE TABLE IF NOT EXISTS Mujer(ID TEXT,Nombre TEXT,Apellido TEXT,CI NUMERIC,Expedido TEXT,Fecha DATE,Lugar TEXT,Edad INT,Compromiso BOOLEAN)')
 		cur.execute('CREATE TABLE IF NOT EXISTS Foto(ID TEXT,Foto TEXT,Qr TEXT,Br TEXT)')
 		cur.execute('CREATE TABLE IF NOT EXISTS Tecn(ID TEXT,Club TEXT,Grado TEXT,Altura REAL,Peso REAL,Phone NUMERIC,Casa TEXT,Sangre TEXT,Alergia TEXT)')
 		cur.execute('CREATE TABLE IF NOT EXISTS Tutor(ID TEXT,Tutor TEXT,Phone NUMERIC)')
 		cur.execute('CREATE TABLE IF NOT EXISTS MesIni(ID TEXT,FechaIni DATE,GradoIni TEXT,Cluba TEXT,Modalidad TEXT,Horario TEXT)')
-		cur.execute('CREATE TABLE IF NOT EXISTS Club(Nombre TEXT,Sigla TEXT,Foto TEXT)')
+		cur.execute('CREATE TABLE IF NOT EXISTS Club(Nombre TEXT,Sigla TEXT,Telefono NUMERIC,Direccion TEXT,Fecha DATE,Foto TEXT)')
 		cur.execute('CREATE TABLE IF NOT EXISTS Horario(Grupo TEXT,Instructor TEXT,HoraIni TEXT,HoraFin Text,Dias TEXT)')
 		cur.execute('CREATE TABLE IF NOT EXISTS Grados(Cinturon Text,Sigla TEXT,Denominacion TEXT)')
 		cur.execute('CREATE TABLE IF NOT EXISTS %sAsistencia(ID TEXT,Fecha DATETIME,Dia TEXT,Control TEXT)'%self.mes)
 		cur.execute('CREATE TABLE IF NOT EXISTS Pagos(ID TEXT,Mes TEXT, Fecha DATE,Responsable TEXT,Monto NUMERIC)')
+		cur.execute('CREATE TABLE IF NOT EXISTS Deudores(ID TEXT,Mes TEXT)')
+		cur.execute('CREATE TABLE IF NOT EXISTS Instructor(ID TEXT,Nombre TEXT, Apellido TEXT,Genero TEXT)')
+		cur.execute('CREATE TABLE IF NOT EXISTS Modalidad(Modo TEXT,Monto NUMERIC)')
 		self.db.commit()
 		cur.close()
+	def setModalidad(self,dato):
+		cur=self.db.cursor()
+		cur.execute('INSERT INTO Modalidad VALUES(?,?)',dato)
+		cur.close()
+		self.db.commit()
+	def delModalidad(self):
+		cur=self.db.cursor()
+		cur.execute('DELETE FROM Modalidad')
+		cur.close()
+		self.db.commit()
+	def getModalidad(self):
+		cur=self.db.cursor()
+		cur.execute('SELECT * FROM Modalidad')
+		dato=cur.fetchall()
+		cur.close()
+		self.db.commit()
+		return dato
+	def getModalidadId(self,modo):
+		cur=self.db.cursor()
+		cur.execute('SELECT * FROM Modalidad WHERE Modo=:m',{'m':modo})
+		dato=cur.fetchall()
+		cur.close()
+		self.db.commit()
+		return dato
+	def setInstructor(self,dato):
+		cur=self.db.cursor()
+		cur.execute('INSERT INTO Instructor VALUES(?,?,?,?)',dato)
+		cur.close()
+		self.db.commit()
+	def delInstructor(self):
+		cur=self.db.cursor()
+		cur.execute('DELETE FROM Instructor')
+		cur.close()
+		self.db.commit()
+	def delInstructorIde(self,ide):
+		cur=self.db.cursor()
+		cur.execute('DELETE FROM Instructor WHERE ID=:n',{'n':ide})
+		cur.close()
+		self.db.commit()
+	def getInstructor(self):
+		cur=self.db.cursor()
+		cur.execute('SELECT * FROM Instructor')
+		datos=cur.fetchall()
+		cur.close()
+		self.db.commit()
+		return datos
 	def setClub(self,dato):
-		if self.getClub()!=0:
+		if self.existeClub(dato)==0:
 			cur=self.db.cursor()
-			cur.execute("INSERT INTO Club VALUES(?,?,?)",dato)
+			cur.execute("INSERT INTO Club VALUES(?,?,?,?,?,?)",dato)
 		else:
 			cur=self.db.cursor()
-			cur.execute("DELETE FROM Club")
-			cur.execute("INSERT INTO Club VALUES(?,?,?)",dato)
+			cur.execute("DELETE FROM Club WHERE Nombre=:n",{'n':dato[0]})
+			cur.execute("INSERT INTO Club VALUES(?,?,?,?,?,?)",dato)
 		self.db.commit()
 		cur.close()
 	def getClub(self):
@@ -47,13 +96,29 @@ class Conector(object):
 			cur.execute("SELECT * FROM Club")
 			datos=cur.fetchall()
 			cur.close()
-			return datos[0]
+			return datos
 		except IndexError:
 			return 0
-	def delHorarioClub(self):
+	def getClubId(self,nombre):
+		cur=self.db.cursor()
+		cur.execute("SELECT * FROM Club WHERE Nombre=:n",{'n':nombre})
+		datos=cur.fetchall()
+		cur.close()
+		return datos
+	def existeClub(self,dato):
+		cur=self.db.cursor()
+		cur.execute("SELECT * FROM Club WHERE  Nombre=:n AND Sigla=:s",{'n':dato[0],'s':dato[1]})
+		info=cur.fetchall()
+		cur.close()
+		return info
+	def delClubId(self,dato):
+		cur=self.db.cursor()
+		cur.execute("DELETE FROM Club WHERE Nombre=:n AND Sigla=:s",{'n':dato[0],'s':dato[1]})
+		cur.close()
+		self.db.commit()
+	def delHorario(self):
 		cur=self.db.cursor()
 		cur.execute("DELETE FROM Horario")
-		cur.execute("DELETE FROM Club")
 		self.db.commit()
 		cur.close()
 	def setHorario(self,dato):
@@ -93,11 +158,11 @@ class Conector(object):
 			if len(row) is not None:
 				datos=dato[1:]
 				datos.append(dato[0])
-				cur.execute("UPDATE %s SET Nombre=?,Apellido=?,CI=?,Fecha=?,Edad=?,Colegio=? WHERE ID=?"%str(tabla),datos)
+				cur.execute("UPDATE %s SET Nombre=?,Apellido=?,CI=?,Expedido=?,Fecha=?,Lugar=?,Edad=?,Compromiso=? WHERE ID=?"%str(tabla),datos)
 				self.db.commit()
 				cur.close()
 		except TypeError:
-			cur.execute("INSERT INTO %s VALUES(?,?,?,?,?,?,?)"%tabla,dato)
+			cur.execute("INSERT INTO %s VALUES(?,?,?,?,?,?,?,?,?)"%tabla,dato)
 			self.db.commit()
 			cur.close()
 	def getEstudiante(self,tabla,ide):
@@ -142,6 +207,13 @@ class Conector(object):
 		cur.execute("DELETE FROM %s WHERE ID=:n"%tabla,{"n":str(ide)})
 		self.db.commit()
 		cur.close()
+	def getAllEstudent(self,tabla):
+		cur=self.db.cursor()
+		cur.execute("SELECT * FROM %s "%tabla)
+		self.db.commit()
+		dato=cur.fetchall()
+		cur.close()
+		return dato
 	def setDatoTec(self,dato):
 		cur=self.db.cursor()
 		cur.execute("SELECT * FROM Tecn WHERE ID=:n",{"n":str(dato[0])})

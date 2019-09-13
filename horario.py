@@ -9,7 +9,6 @@ class HorarioClub(QWidget):
 	"""Nomina de estudiantes del club"""
 	def __init__(self, arg,dire):
 		super(HorarioClub, self).__init__(arg)
-		self.setGeometry(0,0,885,630)
 		self.dir=dire
 		self.msges=Mensage.Msg(self.dir)
 		self.db=conector.Conector(self.dir)
@@ -18,35 +17,41 @@ class HorarioClub(QWidget):
 			self.setStyleSheet(f.read())
 		self.myLabel()
 		self.myButton()
+		self.agregarOption()
+		self.actualizar()
 		self.position()
 	def myLabel(self):
-		self.titulo=QLabel("<h1>Horarios del Club</h1>",self)
-		self.nomClubl=QLabel("<h2>Nombre Del club</h2>",self)
-		self.siglal=QLabel("<h2>Sigla</h2>",self)
+		self.titulo=QLabel("Horarios del Club",self)
+		self.horaInil=QLabel("Hora Inicio",self)
+		self.horaIni=QTimeEdit(self)
+		self.horaIni.setDisplayFormat("HH:mm")
+		self.horaFin=QTimeEdit(self)
+		self.horaFinl=QLabel("Hora Fin",self)
+		self.horaFin.setDisplayFormat("HH:mm")
+		self.clubl=QLabel("Club",self)
+		self.club=QComboBox(self)
+		self.insL=QLabel('Instructor',self)
+		self.ins=QComboBox(self)
 		self.tabla=QTableWidget(self)
 		self.tabla.setRowCount(20)
 		self.tabla.setColumnCount(11)
-		self.tabla.setHorizontalHeaderLabels(["Grupo","Instructor","Inicio","Fina","Lunes","Martes","Miercoles","Jueves","Viernes","Sabado","Domingo"])
+		self.tabla.setHorizontalHeaderLabels(["Grupo","Instructor","Inicio","Fin","Lunes","Martes","Miercoles","Jueves","Viernes","Sabado","Domingo"])
 		self.tabla.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
 		self.tabla.itemSelectionChanged.connect(self.activado)
 		self.imgClb=QLabel(self)
 		self.imgClb.setObjectName("img")
-		img=QPixmap.fromImage(QImage('%s/Imagenes/clb.png'%self.dir)).scaled(180,180,Qt.KeepAspectRatio)
+		img=QPixmap.fromImage(QImage('%s/Imagenes/clb.png'%self.dir)).scaled(100,100,Qt.KeepAspectRatio)
 		self.imgClb.setPixmap(img)
 		self.imgClb.setAlignment(Qt.AlignCenter)
-		self.nomClub=QLineEdit(self)
-		self.nomClub.editingFinished.connect(self.formalClub)
-		self.sigla=QLineEdit(self)
-		self.sigla.editingFinished.connect(self.formalSigla)
 	def activado(self):
 		fila=self.tabla.currentRow()
-		if self.tabla.item(fila,4) is None:
-			for i in [0,1,2,3,4,5,6,7,8,9,10]:
-				if i>=4:
-					self.tabla.setItem(fila , i,QTableWidgetItem('n'))
-				else: 
-					self.tabla.setItem(fila , i,QTableWidgetItem('-'))
+		if self.tabla.item(fila,0) is not None:
+			for i in [4,5,6,7,8,9,10]:
+				self.tabla.setItem(fila , i,QTableWidgetItem('n'))
 	def myButton(self):
+		self.agregar=QPushButton(QIcon("%s/Imagenes/agregar.png"%self.dir),"Agregar",self)
+		self.agregar.setIconSize(QSize(30,30))
+		self.agregar.clicked.connect(self.agregarHora)
 		self.guardar=QPushButton(QIcon("%s/Imagenes/save.png"%self.dir),"Guardar",self)
 		self.guardar.setIconSize(QSize(30,30))
 		self.guardar.clicked.connect(self.save)
@@ -56,34 +61,48 @@ class HorarioClub(QWidget):
 		self.imprimir=QPushButton(QIcon('%s/Imagenes/print.png'%self.dir),"",self)
 		self.imprimir.setIconSize(QSize(70,70))
 		self.imprimir.setObjectName("redondo")
-		self.eliminar=QPushButton(QIcon('%s/Imagenes/borrar.png'%self.dir),"",self)
-		self.eliminar.setIconSize(QSize(70,70))
-		self.eliminar.setObjectName("redondo")
+		self.eliminar=QPushButton(QIcon('%s/Imagenes/borrar.png'%self.dir),"Eliminar",self)
+		self.eliminar.setIconSize(QSize(30,30))
 		self.eliminar.clicked.connect(self.borrarBd)
-		self.loadImg=QPushButton(QIcon('%s/Imagenes/foto.png'%self.dir),"",self)
-		self.loadImg.setIconSize(QSize(70,70))
-		self.loadImg.setObjectName("redondo")
-		self.loadImg.clicked.connect(self.cargarImg)
+	def agregarHora(self):
+		fila=0
+		while self.tabla.item(fila,0) is not None:
+			fila+=1
+		self.tabla.setItem(fila,0,QTableWidgetItem('Grupo %d'%fila))
+		self.tabla.setItem(fila,1,QTableWidgetItem(self.ins.currentText()))
+		self.tabla.setItem(fila,2,QTableWidgetItem(self.horaIni.time().toString('HH:mm')))
+		self.tabla.setItem(fila,3,QTableWidgetItem(self.horaFin.time().toString('HH:mm')))
 	def position(self):
 		self.titulo.setGeometry(292,30,300,40)
-		self.tabla.setGeometry(50,90,400,400)
-		self.imgClb.setGeometry(460,90,200,200)
-		self.loadImg.setGeometry(680,140,100,100)
-		self.nomClubl.setGeometry(460,310,150,40)
-		self.nomClub.setGeometry(620,310,150,40)
-		self.siglal.setGeometry(460,370,150,40)
-		self.sigla.setGeometry(620,370,150,40)
+		self.tabla.setGeometry(50,90,600,400)
+		self.clubl.setGeometry(670,30,60,40)
+		self.club.setGeometry(750,30,150,40)
+		self.imgClb.setGeometry(700,90,100,100)
+		self.horaInil.setGeometry(670,210,100,40)
+		self.horaIni.setGeometry(790,210,100,40)
+		self.horaFinl.setGeometry(670,270,100,40)
+		self.horaFin.setGeometry(790,270,100,40)
+		self.insL.setGeometry(670,330,100,40)
+		self.ins.setGeometry(790,330,100,40)
+		self.agregar.setGeometry(670,390,100,40)
 		self.guardar.setGeometry(50,500,100,40)
 		self.limpiar.setGeometry(390,500,100,40)
-		self.eliminar.setGeometry(625,450,100,100)
+		self.eliminar.setGeometry(625,500,100,40)
 		self.imprimir.setGeometry(735,450,100,100)
+	def agregarOption(self):
+		club=self.db.getClub()
+		for i in club:
+			if self.club.findText(i[0])<0:
+				self.club.addItem(i[0])
+		instructor=self.db.getInstructor()
+		for i in instructor:
+			if self.ins.findText(i[1])<0:
+				self.ins.addItem(i[1])
 	def save(self):
-		self.db.delHorarioClub()
+		self.db.delHorario()
 		cont=0
 		try:
-			club=[unicode(self.nomClub.text()),self.sigla.text(),self.dirImg]
-			self.db.setClub(club)
-			while self.tabla.item(cont,0).text()!=' ':
+			while self.tabla.item(cont,0)is not None:
 				dias=str(self.buscarDias(cont))
 				dataHor=[str(self.tabla.item(cont,0).text()).replace(' ',''),
 				str(self.tabla.item(cont,1).text()).title(),
@@ -91,9 +110,8 @@ class HorarioClub(QWidget):
 				str(self.tabla.item(cont,3).text()).replace(' ',''),dias]
 				self.db.setHorario(dataHor)
 				cont+=1
-		except AttributeError:
-			self.msges.mensageBueno("<h1>Se Guardo Correctamente</h1>")
-		else:
+			self.msges.mensageBueno("<h1>Se guardo Correctamente</h1>")
+		except:
 			self.msges.mensageMalo("<h1>Un Problema al guardar La información</h1>")
 	def buscarDias(self,cont):
 		diaT=""
@@ -104,31 +122,7 @@ class HorarioClub(QWidget):
 				diaT+="%s,"%i
 			dia+=1
 		return diaT[:len(diaT)-1]
-	def formalClub(self):
-		self.nomClub.setText(unicode(self.nomClub.text()).title())
-	def formalSigla(self):
-		self.sigla.setText(unicode(self.sigla.text()).upper())
-	def cargarImg(self):
-		fileName,_ = QFileDialog.getOpenFileName(self,u"Buscar Imagen",QDir.currentPath())
-		nombre=unicode(self.nomClub.text().replace(" ","_")).title()
-		if (fileName and nombre!=""):
-			image = QImage(fileName)
-			if image.isNull():
-				QMessageBox.information(self, "Seleccione Una Imagen","error %s." % fileName)
-				return
-			else:
-				img=QPixmap.fromImage(image).scaled(180, 180,Qt.KeepAspectRatio)
-				self.imgClb.setPixmap(img)
-				self.imgClb.setAlignment(Qt.AlignCenter)
-				extencion=fileName[fileName.find('.'):]
-				direccion="%s/Imagenes/imgClub/%s"%(str(os.getcwd()),str(self.nomClub.text()+extencion))
-				shutil.copyfile(fileName,direccion)
-				self.dirImg=str(direccion)
-		else:
-			self.msges.mensageMalo("<h1>Intente Nuevamente\nColoque el Nombre del Club</h1>")
 	def limpiarI(self):
-		self.nomClub.clear()
-		self.sigla.clear()
 		img=QPixmap.fromImage(QImage('%s/Imagenes/clb.png'%self.dir)).scaled(180,180,Qt.KeepAspectRatio)
 		self.imgClb.setPixmap(img)
 		self.imgClb.setAlignment(Qt.AlignCenter)
@@ -137,12 +131,6 @@ class HorarioClub(QWidget):
 		self.tabla.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
 		self.dirImg=""
 	def actualizar(self):
-		club=self.db.getClub()
-		self.nomClub.setText(club[0])
-		self.sigla.setText(club[1])
-		img=QPixmap.fromImage(QImage(club[2])).scaled(180,180,Qt.KeepAspectRatio)
-		self.imgClb.setPixmap(img)
-		self.imgClb.setAlignment(Qt.AlignCenter)
 		datos=self.db.getHorario()
 		cont=0
 		for i in datos:
@@ -162,7 +150,7 @@ class HorarioClub(QWidget):
 			dia+=1
 	def borrarBd(self):
 		try:
-			self.db.delHorarioClub()
+			self.db.delHorario()
 			self.msges.mensageBueno("<h1>Eliminado Correctamente</h1>")
 		except:
 			self.msges.mensageMalo("<h1>No se Pudo Eliminar los Dato</h1>")

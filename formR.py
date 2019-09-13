@@ -4,7 +4,7 @@ from PySide.QtGui import *
 from PySide.QtCore import *
 import pybase64,conector,Mensage
 import Base64SIN,prRc4,verhoeff
-import qrcode,barcode,time,buscar
+import qrcode,barcode,time,buscar,os
 
 class formR(QWidget):
 	"""Formulario de registro del estudiante"""
@@ -22,7 +22,7 @@ class formR(QWidget):
 		with open('%s/css/stylesMenu.css'%self.dir) as f:
 			self.setStyleSheet(f.read())
 		self.buscare=buscar.buscarEst(self,self.dir)
-		self.buscare.clicked.connect(self.actualizar)
+		#self.buscare.clicked.connect(self.actualizar)
 		self.timer=QTimer(self)
 		self.texto()
 		self.inTex()
@@ -66,6 +66,18 @@ class formR(QWidget):
 		self.apellido=QLineEdit(self)
 		self.apellido.editingFinished.connect(lambda:self.formalizar(self.apellido))
 		self.ci=QLineEdit(self)
+		self.ci.editingFinished.connect(self.sacarEs)
+		self.expedido=QComboBox(self)
+		self.expedido.addItem("CBA")
+		self.expedido.addItem("LPZ")
+		self.expedido.addItem("SCZ")
+		self.expedido.addItem("TJA")
+		self.expedido.addItem("ORU")
+		self.expedido.addItem("PND")
+		self.expedido.addItem("PSI")
+		self.expedido.addItem("CHQ")
+		self.expedido.addItem("BNI")
+		self.expedido.setStatusTip("Cedula expedido en que departamento")
 		self.fechaN=QDateEdit(self)
 		self.fechaN.dateChanged.connect(self.setEdad)
 		self.lugar=QLineEdit(self)
@@ -73,6 +85,8 @@ class formR(QWidget):
 		self.edad=QSpinBox(self)
 		self.edad.setSuffix(u' años')
 		self.compromiso=QCheckBox("Firma\nDocumento",self)
+	def sacarEs(self):
+		self.ci.setText(self.ci.text().replace(' ',''))
 	def botones(self):
 		self.limpiar=QPushButton(QIcon('%s/Imagenes/limpiar.png'%self.dir),"Limpiar",self)
 		self.limpiar.clicked.connect(self.clear)
@@ -86,18 +100,17 @@ class formR(QWidget):
 		self.escanQR.clicked.connect(self.escanear)
 		self.escanQR.setIconSize(QSize(35,35))
 		self.escanQR.setStatusTip("Escanear el codigo del Estudiante")
-		self.imgE=QPushButton(QIcon('%s/Imagenes/foto.png'%self.dir),"",self)
-		self.imgE.setIconSize(QSize(75,75))
-		self.imgE.setObjectName("redondo")
+		self.imgE=QPushButton(QIcon('%s/Imagenes/foto.png'%self.dir),"Sacar Foto",self)
+		self.imgE.setIconSize(QSize(35,35))
 		self.imgE.setStatusTip("Sacar foto con la camara")
 		self.eliminar=QPushButton(QIcon('%s/Imagenes/borrar.png'%self.dir),"Eliminar",self)
 		self.eliminar.setIconSize(QSize(35,35))
 		self.eliminar.clicked.connect(self.eliminarE)
-		self.loadImg=QPushButton(QIcon('%s/Imagenes/img.png'%self.dir),"",self)
-		self.loadImg.setIconSize(QSize(80,80))
-		self.loadImg.setObjectName("redondo")
+		self.loadImg=QPushButton(QIcon('%s/Imagenes/img.png'%self.dir),"Cargar Imagen",self)
+		self.loadImg.setIconSize(QSize(35,35))
 		self.loadImg.clicked.connect(self.cargarFoto)
 		self.loadImg.setStatusTip("Cargar Imagen para el Estudiante")
+		self.buscare.mostrar.clicked.connect(self.actualizar)
 	def position(self):
 		self.nombrel.setGeometry(20,20,120,40)
 		self.nombre.setGeometry(150,20,200,40)
@@ -105,6 +118,7 @@ class formR(QWidget):
 		self.apellido.setGeometry(150,70,200,40)
 		self.cil.setGeometry(20,120,120,40)
 		self.ci.setGeometry(150,120,200,40)
+		self.expedido.setGeometry(370,120,100,40)
 		self.fechaNl.setGeometry(20,170,120,40)
 		self.fechaN.setGeometry(150,170,200,40)
 		self.lugarl.setGeometry(20,220,120,40)
@@ -113,20 +127,23 @@ class formR(QWidget):
 		self.edad.setGeometry(150,270,200,40)
 		self.eh.setGeometry(370,20,100,40)
 		self.em.setGeometry(370,70,100,40)
-		self.compromiso.setGeometry(370,110,150,70)
+		self.compromiso.setGeometry(370,180,150,70)
 		self.fotoEl.setGeometry(520,20,200,200)
-		self.loadImg.setGeometry(370,240,100,100)
-		self.escanQR.setGeometry(490,265,130,50)
-		self.imgE.setGeometry(640,240,100,100)
-		self.id.setGeometry(370,360,300,40)
+		self.loadImg.setGeometry(520,240,200,40)
+		self.imgE.setGeometry(520,300,200,40)
+		self.id.setGeometry(370,360,200,40)
 		self.qr.setGeometry(70,340,250,200)
+		self.buscare.setGeometry(590,360,350,180)
 		self.title.setGeometry(110,360,120,40)
-		self.buscare.setGeometry(370,420,400,150)
+		self.br.setGeometry(370,420,200,100)
 		self.guardar.setGeometry(740,30,130,40)
 		self.limpiar.setGeometry(740,90,130,40)
 		self.eliminar.setGeometry(740,150,130,40)
-		self.br.setGeometry(760,210,200,100)
+		self.escanQR.setGeometry(740,210,130,40)
 	def clear(self):
+		self.compromiso.setChecked(False)
+		self.eh.setChecked(False)
+		self.em.setChecked(False)
 		self.dirQr=""
 		self.dirBr=""
 		self.dirFoto=""
@@ -137,6 +154,8 @@ class formR(QWidget):
 		self.fechaN.clear()
 		self.lugar.clear()
 		self.edad.clear()
+		self.buscare.limpiarBusqueda()
+		self.persona.setId('')
 		self.fotoEl.setPixmap(QPixmap.fromImage(QImage('%s/Imagenes/psn.png'%self.dir)).scaled(200,200,Qt.KeepAspectRatio))
 		self.qr.setPixmap(QPixmap.fromImage(QImage('%s/Imagenes/qr.png'%self.dir)).scaled(250,200,Qt.KeepAspectRatio))
 		self.br.setPixmap(QPixmap.fromImage(QImage('%s/Imagenes/br.png'%self.dir)).scaled(200,100,Qt.KeepAspectRatio))
@@ -152,18 +171,18 @@ class formR(QWidget):
 		self.edad.setValue(int(time.strftime('%Y'))-year)
 	def save(self):
 		self.generarQr()
-		try:
-			info=[self.id.text(),unicode(self.nombre.text()),unicode(self.apellido.text()),
-				self.ci.text(),self.fechaN.date().toString('yyyy-M-d'),
-				unicode(self.lugar.text()),self.edad.value()]
-			if self.eh.isChecked():
-				self.db.setEstudiante('Varon',info)
-			elif self.em.isChecked():
-				self.db.setEstudiante('Mujer',info)
-			self.persona.setId(unicode(self.id.text()))
-			self.msg.mensageBueno("<h1>Guardado Correctamente</h1>")
-		except:
-			self.msg.mensageMalo("<h1>Error Al Guardar</h1>")
+		#try:
+		info=[self.id.text(),unicode(self.nombre.text()),unicode(self.apellido.text()),
+				self.ci.text(),self.expedido.currentText(),self.fechaN.date().toString('yyyy-M-d'),
+				unicode(self.lugar.text()),self.edad.value(),self.compromiso.isChecked()]
+		if self.eh.isChecked():
+			self.db.setEstudiante('Varon',info)
+		elif self.em.isChecked():
+			self.db.setEstudiante('Mujer',info)
+		self.persona.setId(unicode(self.id.text()))
+		self.msg.mensageBueno("<h1>Guardado Correctamente</h1>")
+		#except:
+		#	self.msg.mensageMalo("<h1>Error Al Guardar</h1>")
 	def generarQr(self):
 		codigo=prRc4.codigo(str(self.verf.calcsum(str(self.verf.calcsum(self.ci.text()))))*5,self.nombre.text()+self.fechaN.text())
 		self.id.setText(codigo)
@@ -183,10 +202,12 @@ class formR(QWidget):
 		elem.setText(elem.text().title())
 	def cargarFoto(self):
 		fileName,_ = QFileDialog.getOpenFileName(self,u"Buscar Imagen",QDir.currentPath())
+		print fileName
 		nombre=unicode(self.id.text().replace(" ",""))
 		if (fileName and nombre!=""):
 			image = QImage(fileName)
-			if image.isNull():
+			print image
+			if image is None:
 				QMessageBox.information(self, "Seleccione Una Imagen","error %s." % fileName)
 				return
 			else:
@@ -216,7 +237,6 @@ class formR(QWidget):
 		datos=self.buscare.getPersona()
 		if len(datos)!=0:
 			persona=datos[0]
-			self.timer.stop()
 			if datos[1]=='Varon':
 				self.eh.setChecked(True)
 			else:
@@ -225,11 +245,12 @@ class formR(QWidget):
 			self.nombre.setText(persona[1])
 			self.apellido.setText(persona[2])
 			self.ci.setText(unicode(persona[3]))
-			fecha=persona[4].split('-')
+			self.expedido.setCurrentIndex(self.expedido.findText(persona[4]))
+			fecha=persona[5].split('-')
 			self.fechaN.setDate(QDate(int(fecha[0]),int(fecha[1]),int(fecha[2])))
-			self.lugar.setText(persona[5])
-			self.edad.setValue(int(persona[6]))
+			self.lugar.setText(persona[6])
+			self.edad.setValue(int(persona[7]))
+			self.compromiso.setChecked(persona[8])
 			self.persona.setId(unicode(self.id.text()))
 		else:
-			self.timer.start(1000)
-			self.timer.timeout.connect(self.actualizar)
+			self.msg.mensageMalo('<h1>Se recomienda Buscar\nnuevamente ...</h1>')

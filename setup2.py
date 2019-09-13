@@ -15,7 +15,7 @@ setup(
     options={"py2exe":{"dll_excludes": ["MSVCP90.dll"]}},
     name="Registro Y Llaves",
     version="0.4",
-    windows = [{'script': "Inicio.py",
+    windows = [{'script': "menuInicio.py",
                 "icon_resources": [(1, "%s/icono.ico"%str(os.getcwd()))],}],
     zipfile = None,
     data_files = DATA,
