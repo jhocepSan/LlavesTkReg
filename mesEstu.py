@@ -101,8 +101,8 @@ class mesEstu(QWidget):
 		self.buscare.limpiarBusqueda()
 	def save(self):
 		if self.nomPago.text()!=''and self.monto.value()!=0 and self.ide.text()!='':
-			datos=[self.ide.text(),self.mesPay.currentText(),self.monto.value(),
-			self.nomPago.text(),self.fecha.date().toString("d/M/yyyy")]
+			datos=[self.ide.text(),self.mesPay.currentText(),self.fecha.date().toString("d/M/yyyy"),
+			self.nomPago.text(),self.monto.value()]
 			if not self.db.pagoMes(datos):
 				self.db.setPago(datos)
 				self.msg.mensageBueno("<h1>Datos del Pago Guardados Correctamente</h1>")

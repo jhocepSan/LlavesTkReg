@@ -11,9 +11,9 @@ class Example(QMainWindow):
 		self.dir="F:/LlavesTkReg"
 		with open('%s/css/styleMenuInicio.css'%self.dir) as f:
 			self.setStyleSheet(f.read())
-		self.setGeometry(5, 30, 1340, 690)
+		self.setGeometry(10, 30, 1350, 690)
 		self.setWindowTitle('Sistema CHOBYT ....!')
-		self.statusBar().showMessage("Mucho Gusto")
+		self.statusBar().showMessage("Mucho Gusto disfrute Usando")
 		self.setWindowIcon(QIcon('%s/Imagenes/Logo.png'%self.dir))
 		self.tabM=QTabWidget(self)
 		self.setCentralWidget(self.tabM)
@@ -32,6 +32,7 @@ class Example(QMainWindow):
 		self.tabM.addTab(self.examen,QIcon('%s/Imagenes/examen.png'%self.dir),"Examen\nEstudiante")
 		self.tabM.addTab(self.listEs,QIcon('%s/Imagenes/listaEvento.png'%self.dir),"Lista de\nEstudiante")
 		self.tabM.addTab(self.config,QIcon('%s/Imagenes/config.png'%self.dir),"Configurar")
+		self.tabM.currentChanged.connect(self.activo)
 		self.tabM.setIconSize(QSize(50,50))
 		self.show()
 	def salir(self):
@@ -39,6 +40,9 @@ class Example(QMainWindow):
 	def irPagos(self,persona):
 		self.tabM.setCurrentIndex(2)
 		self.payMes.actualizar(persona.getId())
+	def activo(self):
+		if(self.tabM.currentIndex()==3):
+			self.examen.showMsg()
 def main():
 	app = QApplication(sys.argv)
 	ex = Example()

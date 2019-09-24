@@ -14,6 +14,7 @@ class Conector(object):
 		'June':'Junio','July':'Julio','August':'Agosto','September':'Septiembre',
 		'October':'Octubre','November':'Noviembre','December':'Diciembre'}
 		self.mes=self.diccionario[time.strftime('%B').title()]
+		self.year=time.strftime('%Y')
 		self.db=sqlite3.connect('%s/baseData/Club/infoClub.db'%self.dir)
 		self.createTable()
 	def createTable(self):
@@ -27,11 +28,17 @@ class Conector(object):
 		cur.execute('CREATE TABLE IF NOT EXISTS Club(Nombre TEXT,Sigla TEXT,Telefono NUMERIC,Direccion TEXT,Fecha DATE,Foto TEXT)')
 		cur.execute('CREATE TABLE IF NOT EXISTS Horario(Grupo TEXT,Instructor TEXT,HoraIni TEXT,HoraFin Text,Dias TEXT)')
 		cur.execute('CREATE TABLE IF NOT EXISTS Grados(Cinturon Text,Sigla TEXT,Denominacion TEXT)')
-		cur.execute('CREATE TABLE IF NOT EXISTS %sAsistencia(ID TEXT,Fecha DATETIME,Dia TEXT,Control TEXT)'%self.mes)
-		cur.execute('CREATE TABLE IF NOT EXISTS Pagos(ID TEXT,Mes TEXT, Fecha DATE,Responsable TEXT,Monto NUMERIC)')
-		cur.execute('CREATE TABLE IF NOT EXISTS Deudores(ID TEXT,Mes TEXT)')
+		cur.execute('CREATE TABLE IF NOT EXISTS %sAsistencia%s(ID TEXT,Fecha DATETIME,Grupo TEXT,Control DATE,Dia TEXT,Controla TEXT)'%(self.mes,self.year))
+		cur.execute('CREATE TABLE IF NOT EXISTS Pagos%s(ID TEXT,Mes TEXT, Fecha DATE,Responsable TEXT,Monto NUMERIC)'%self.year)
+		cur.execute('CREATE TABLE IF NOT EXISTS Deudores%s(ID TEXT,Mes TEXT)'%self.year)
 		cur.execute('CREATE TABLE IF NOT EXISTS Instructor(ID TEXT,Nombre TEXT, Apellido TEXT,Genero TEXT)')
 		cur.execute('CREATE TABLE IF NOT EXISTS Modalidad(Modo TEXT,Monto NUMERIC)')
+		cur.execute('CREATE TABLE IF NOT EXISTS ExamenClub(Nombre TEXT,Fecha DATE)')
+		self.db.commit()
+		cur.close()
+	def crearTablaExamen(self,nombre):
+		cur=self.db.cursor()
+		cur.execute('CREATE TABLE IF NOT EXISTS %s(Nombre TEXT,Apellido TEXT,Fecha Date,Lugar Text,GradoPostulante TEXT,Carnet NUMERIC,Edad NUMERIC,ID TEXT)'%unicode(nombre))
 		self.db.commit()
 		cur.close()
 	def setModalidad(self,dato):
@@ -133,6 +140,13 @@ class Conector(object):
 		cur.close()
 		self.db.commit()
 		return dato
+	def getHorarioG(self,grupo):
+		cur=self.db.cursor()
+		cur.execute("SELECT * FROM Horario WHERE Grupo=:g",{'g':grupo})
+		dato=cur.fetchall()
+		cur.close()
+		self.db.commit()
+		return dato[0]
 	def setGrado(self,dato):
 		cur=self.db.cursor()
 		cur.execute("INSERT INTO Grados VALUES(?,?,?)",dato)
@@ -297,17 +311,42 @@ class Conector(object):
 		cur.close()
 	def setAsistencia(self,dato):
 		cur=self.db.cursor()
-		cur.execute('INSERT INTO %sAsistencia VALUES(?,?,?,?)'%self.mes,dato)
+		cur.execute('INSERT INTO %sAsistencia%s VALUES(?,?,?,?,?,?)'%(self.mes,self.year),dato)
 		self.db.commit()
 		cur.close()
+	def getAsistenciaId(self,ide):
+		cur=self.db.cursor()
+		cur.execute('SELECT * FROM %sAsistencia%s WHERE ID=:i AND Controla=:c'%(self.mes,self.year),{"i":ide,"c":'A'})
+		dato=cur.fetchall()
+		self.db.commit()
+		cur.close()
+		print len(dato[0])
+		return dato
+	def exiteAsistencia(self,grupo,fecha):
+		cur=self.db.cursor()
+		cur.execute('SELECT * FROM %sAsistencia WHERE Grupo=:g AND Control=:c'%self.mes,{"g":grupo,"c":fecha})
+		dato=cur.fetchall()
+		self.db.commit()
+		cur.close()
+		if len(dato)>0:
+			return True
+		else:
+			return False
 	def setPago(self,datos):
 		cur=self.db.cursor()
-		cur.execute("INSERT INTO Pagos VALUES(?,?,?,?,?)",datos)
+		cur.execute("INSERT INTO Pagos%s VALUES(?,?,?,?,?)"%self.year,datos)
 		self.db.commit()
 		cur.close()
+	def getPagoMes(self,mes):
+		cur=self.db.cursor()
+		cur.execute("SELECT * FROM Pagos%s WHERE Mes=:m"%self.year,{'m':mes})
+		datos=cur.fetchall()
+		self.db.commit()
+		cur.close()
+		return datos
 	def pagoMes(self,datos):
 		cur=self.db.cursor()
-		cur.execute('SELECT * FROM Pagos WHERE ID=:n AND Mes=:m',{'n':str(datos[0]),'m':str(datos[1])})
+		cur.execute('SELECT * FROM Pagos%s WHERE ID=:n AND Mes=:m'%self.year,{'n':str(datos[0]),'m':str(datos[1])})
 		row=cur.fetchall()
 		self.db.commit()
 		cur.close()
@@ -315,3 +354,25 @@ class Conector(object):
 			return True
 		else:
 			return False
+	def setExamenClub(self,dato):
+		cur=self.db.cursor()
+		cur.execute('INSERT INTO ExamenClub VALUES(?,?)',dato)
+		self.db.commit()
+		cur.close()
+	def getExamenClub(self):
+		cur=self.db.cursor()
+		cur.execute('SELECT * FROM ExamenClub')
+		lista=cur.fetchall()
+		cur.close()
+		return lista
+	def getExamenLista(self,tabla):
+		cur=self.db.cursor()
+		cur.execute('SELECT * FROM %s'%tabla)
+		lista=cur.fetchall()
+		cur.close()
+		return lista
+	def setExamenLista(self,tabla,datos):
+		cur=self.db.cursor()
+		cur.execute('INSERT INTO %s VALUES(?,?,?,?,?,?,?,?)'%tabla,datos)
+		self.db.commit()
+		cur.close()
