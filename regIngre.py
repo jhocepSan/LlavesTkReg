@@ -48,6 +48,7 @@ class ingresos(QWidget):
 		self.mesl.setGeometry(190,90,150,40)
 		self.mes.setGeometry(360,90,150,40)
 	def ingresarMonto(self):
+		self.clearTabla()
 		monto=0
 		mes=self.selectMes.currentText()
 		datos=self.db.getPagoMes(mes)
@@ -66,3 +67,7 @@ class ingresos(QWidget):
 			fila+=1
 			self.tabla.insertRow(fila)
 		self.mes.setText(str(monto)+" Bs")
+	def clearTabla(self):
+		self.tabla.clear()
+		self.tabla.setHorizontalHeaderLabels(["Nombre","Apellido","CI","Grado","Grupo","Monto Bs"])
+		self.tabla.setRowCount(1)
