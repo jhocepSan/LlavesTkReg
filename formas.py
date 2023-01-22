@@ -1,5 +1,6 @@
-from PySide.QtGui import *
-from PySide.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 import sqlite3,os,formaPDF
 
 class forma():

@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
-from PySide.QtGui import *
-from PySide.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 import sqlite3,sys,os,shutil
 import os.path as path
 from fpdf import FPDF
@@ -250,9 +251,9 @@ class ventanaR(QMainWindow):
                 self.botonS.setIcon(QIcon('%s/Imagenes/salir.png'%self.dir))
                 self.botonS.setIconSize(QSize(30,30))
                 self.botonS.setStatusTip("Salir de la Aplicacion")
-                self.connect(self.botonS,SIGNAL("clicked()"),self.salir)
-                self.iconP=QPixmap('%s/Imagenes/load.png'%self.dir)
-                self.iconCl=QPixmap('%s/Imagenes/load.png'%self.dir)
+                self.botonS.clicked.connect(self.salir)
+                self.iconP=QIcon('%s/Imagenes/load.png'%self.dir)
+                self.iconCl=QIcon('%s/Imagenes/load.png'%self.dir)
                 self.fotoP=QPushButton("PSN",self)
                 self.fotoP.setIcon(self.iconP)
                 self.fotoP.setIconSize(QSize(30,30))
@@ -272,7 +273,7 @@ class ventanaR(QMainWindow):
                 self.tabla.setRowCount(100)
                 self.tabla.setColumnCount(3)
                 self.tabla.setHorizontalHeaderLabels(['Id',"Nombre","Apellido"])
-                self.tabla.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
+                self.tabla.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
                 self.tabla.cellClicked.connect(self.accionTabla)
         def capturaCamara(self):
                 self.camr=cameraP.camaraCap(self.dir)
@@ -956,7 +957,7 @@ class ventanaR(QMainWindow):
                         extencion=fileName[fileName.find('.'):]
                         if tipo=='C':
                                 direccion="%s/Imagenes/imgEstudiante/%s"%(str(os.getcwd()),str(self.carnetId.text()+extencion))
-                                print direccion
+                                print(direccion)
                                 shutil.copyfile(fileName,direccion)
                                 self.dirrForoC=str(direccion)
                         else:
@@ -1003,12 +1004,12 @@ class ventanaR(QMainWindow):
                         cur1.execute("SELECT * FROM Seguridad WHERE ID=0")
                         for l in cur1:
                                 cur=cargo.cursor()
-                                print "entro"+str(l[1])
+                                print("entro"+str(l[1]))
                                 if int(l[1])==int(self.yearActual):             
                                         for i in range(len(tablas)):
                                                 cur.execute("SELECT * FROM %s"%str(tablas[i]))
                                                 for j in cur:
-                                                        print j[1]
+                                                        print(j[1])
                                                         self.cargaDato(j,str(tablas[i]))
                                         for i in range(len(tablas1)):
                                                 cur.execute("SELECT * FROM %s"%str(tablas1[i]))

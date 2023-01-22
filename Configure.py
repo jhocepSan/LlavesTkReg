@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
-from PySide.QtGui import *
-from PySide.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 import pumse,grade,kyruqui,tk5
 
 class ventanaConfi(QMainWindow):
@@ -26,7 +27,7 @@ class ventanaConfi(QMainWindow):
                         statusTip="Mostrar Copnfiguracion", triggered=self.verConf)
                 menuConf.addAction(self.newAct)
         def verConf(self):
-                print "hOLA"
+                print("hOLA")
         def kyrugui(self):
                 self.menuCat=QTabWidget(self)
                 self.menuCat.setObjectName("tabs")

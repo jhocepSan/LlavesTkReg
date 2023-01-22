@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
-from PySide.QtGui import *
-from PySide.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 #import cv2
 class camaraCap(QMainWindow):
 	"""docstring for camaraCap"""
@@ -26,7 +27,7 @@ class camaraCap(QMainWindow):
 	def capturar(self):
 		pass
 	def guardar(self):
-		print "Capturar la foto"
+		print("Capturar la foto")
 	def salir(self):
 		self.timer.stop()
 		self.close()

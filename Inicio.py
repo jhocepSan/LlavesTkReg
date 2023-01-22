@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
-from PySide.QtGui import *
-from PySide.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 import sys,os,Mensage,Registro
 
 class dialogo(QDialog):
@@ -67,7 +68,7 @@ def main():
         app=QApplication(sys.argv)
         screen_resolution = app.desktop().screenGeometry()
         width, height = screen_resolution.width(), screen_resolution.height()
-        ruta="F:/LlavesTkReg"
+        ruta="D:/tekondo/LlavesTkReg"
         msgSaludo=QMessageBox()
         with open('%s/css/styleDialog.css'%ruta) as f:
                 msgSaludo.setStyleSheet(f.read()) 
